@@ -15,6 +15,8 @@ struct AddRuleView: View {
     @State private var selectedWeekdays: Set<Weekday> = Weekday.workdays
     @State private var noticeEnabled: Bool = false
     @State private var noticeMinutes: Int = 5
+    @State private var isOneTime: Bool = false
+    @State private var onceDate: Date = Date()
     @State private var hoveredType: RuleType?
     @State private var hoveredDay: Weekday?
 
@@ -44,7 +46,7 @@ struct AddRuleView: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                     VStack(spacing: 2) {
-                        ForEach(RuleType.allCases, id: \.self) { type in
+                        ForEach(RuleType.selectable, id: \.self) { type in
                             actionRow(type)
                         }
                     }
@@ -68,46 +70,75 @@ struct AddRuleView: View {
                     .padding(.leading, 10)   // align with ACTION row icons
                 }
 
-                // Weekdays
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(LocalizedStringKey("schedule.days"))
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    HStack(spacing: 10) {
-                        Image(systemName: "calendar")
-                            .font(.system(size: 14))
-                            .frame(width: 20, alignment: .leading)
-                            .foregroundStyle(.secondary)
-                        HStack(spacing: 4) {
-                            ForEach(Weekday.allCases) { day in
-                                let selected = selectedWeekdays.contains(day)
-                                Text(day.localizedShort)
-                                    .font(.caption)
-                                    .frame(width: 28, height: 24)
-                                    .background(
-                                        selected ? Color.accentColor
-                                        : (hoveredDay == day ? Color.secondary.opacity(0.30)
-                                                             : Color.secondary.opacity(0.15)),
-                                        in: RoundedRectangle(cornerRadius: 4)
-                                    )
-                                    .foregroundStyle(selected ? .white : .primary)
-                                    .onHover { hoveredDay = $0 ? day : (hoveredDay == day ? nil : hoveredDay) }
-                                    .onTapGesture {
-                                        if selected { selectedWeekdays.remove(day) }
-                                        else        { selectedWeekdays.insert(day) }
-                                    }
+                // Repeat: weekly or one-time
+                VStack(alignment: .leading, spacing: 6) {
+                    Picker("", selection: $isOneTime) {
+                        Text(LocalizedStringKey("schedule.recurring")).tag(false)
+                        Text(LocalizedStringKey("schedule.once")).tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+
+                    if isOneTime {
+                        HStack(spacing: 10) {
+                            Image(systemName: "calendar")
+                                .font(.system(size: 14))
+                                .frame(width: 20, alignment: .leading)
+                                .foregroundStyle(.secondary)
+                            DatePicker("", selection: $onceDate,
+                                       in: Date()..., displayedComponents: .date)
+                                .labelsHidden()
+                                .datePickerStyle(.compact)
+                        }
+                        .padding(.leading, 10)
+                    } else {
+                        HStack(spacing: 10) {
+                            Image(systemName: "calendar")
+                                .font(.system(size: 14))
+                                .frame(width: 20, alignment: .leading)
+                                .foregroundStyle(.secondary)
+                            HStack(spacing: 4) {
+                                ForEach(Weekday.allCases) { day in
+                                    let selected = selectedWeekdays.contains(day)
+                                    Text(day.localizedShort)
+                                        .font(.caption)
+                                        .frame(width: 28, height: 24)
+                                        .background(
+                                            selected ? Color.accentColor
+                                            : (hoveredDay == day ? Color.secondary.opacity(0.30)
+                                                                 : Color.secondary.opacity(0.15)),
+                                            in: RoundedRectangle(cornerRadius: 4)
+                                        )
+                                        .foregroundStyle(selected ? .white : .primary)
+                                        .onHover { hoveredDay = $0 ? day : (hoveredDay == day ? nil : hoveredDay) }
+                                        .onTapGesture {
+                                            if selected { selectedWeekdays.remove(day) }
+                                            else        { selectedWeekdays.insert(day) }
+                                        }
+                                }
                             }
                         }
+                        .padding(.leading, 10)
                     }
-                    .padding(.leading, 10)   // align with ACTION/TIME icons
                 }
 
-                // Advance notice (only for disruptive actions) — visually separated
-                // from the core fields above since it's an optional enhancement.
+                // Advance notice — visually separated as it's an optional enhancement.
                 if selectedType.supportsAdvanceNotice {
                     Divider()
                         .padding(.vertical, 2)
                     advanceNoticeSection
+                }
+
+                if selectedType == .shutdown {
+                    Text(LocalizedStringKey("schedule.shutdownNote"))
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    Text(LocalizedStringKey("schedule.sleepNote"))
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .padding(.horizontal, 12)
@@ -133,8 +164,9 @@ struct AddRuleView: View {
                         type: selectedType,
                         hour: hour,
                         minute: minute,
-                        weekdays: selectedWeekdays,
-                        advanceNoticeMinutes: notice
+                        weekdays: isOneTime ? [] : selectedWeekdays,
+                        advanceNoticeMinutes: notice,
+                        oneTimeDate: isOneTime ? onceDate : nil
                     ))
                     active = .main
                 } label: {
@@ -144,7 +176,7 @@ struct AddRuleView: View {
                 .buttonStyle(.borderedProminent)
                 .frame(width: 100)
                 .keyboardShortcut(.defaultAction)
-                .disabled(selectedWeekdays.isEmpty)
+                .disabled(!isOneTime && selectedWeekdays.isEmpty)
             }
             .padding(.horizontal, 12)
             .padding(.top, 14)

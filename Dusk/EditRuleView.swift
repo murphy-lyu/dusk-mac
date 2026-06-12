@@ -139,11 +139,17 @@ struct EditRuleView: View {
                     advanceNoticeSection
                 }
 
-                // Sleep caveat: launchd defers to wake.
-                Text(LocalizedStringKey("schedule.sleepNote"))
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                    .fixedSize(horizontal: false, vertical: true)
+                if selectedType == .shutdown {
+                    Text(LocalizedStringKey("schedule.shutdownNote"))
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    Text(LocalizedStringKey("schedule.sleepNote"))
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 14)

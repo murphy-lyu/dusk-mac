@@ -56,6 +56,10 @@
 "schedule.cancel"     = "Abbrechen";
 "schedule.save"       = "Sichern";
 "schedule.addButton"  = "Hinzufügen";
+"schedule.recurring"  = "Wöchentlich";
+"schedule.once"       = "Einmalig";
+"schedule.sleepNote"  = "Schläft dein Mac zum geplanten Zeitpunkt, wird die Aufgabe nach dem Aufwachen ausgeführt.";
+"schedule.shutdownNote" = "Beim Herunterfahren werden alle Apps beendet. Nicht gespeicherte Arbeit geht verloren.";
 
 // Settings
 "settings.general"        = "Allgemein";

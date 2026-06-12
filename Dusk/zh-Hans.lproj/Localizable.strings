@@ -56,6 +56,10 @@
 "schedule.cancel"     = "取消";
 "schedule.save"       = "保存";
 "schedule.addButton"  = "添加";
+"schedule.recurring"  = "每周重复";
+"schedule.once"       = "仅一次";
+"schedule.sleepNote"  = "若 Mac 在预定时间处于睡眠状态，任务将在唤醒后执行。";
+"schedule.shutdownNote" = "关机会强制退出所有应用，未保存的工作将丢失。";
 
 // Settings
 "settings.general"        = "通用";
