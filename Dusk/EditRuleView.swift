@@ -82,20 +82,16 @@ struct EditRuleView: View {
                 }
 
                 // Days / one-time
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(alignment: .center) {
-                        Text(LocalizedStringKey("schedule.days"))
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Picker("", selection: $isOneTime) {
-                            Text(LocalizedStringKey("schedule.recurring")).tag(false)
-                            Text(LocalizedStringKey("schedule.once")).tag(true)
-                        }
-                        .pickerStyle(.segmented)
-                        .labelsHidden()
-                        .frame(width: 120)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(LocalizedStringKey("schedule.days"))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Picker("", selection: $isOneTime) {
+                        Text(LocalizedStringKey("schedule.recurring")).tag(false)
+                        Text(LocalizedStringKey("schedule.once")).tag(true)
                     }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
 
                     if isOneTime {
                         HStack(spacing: 10) {
