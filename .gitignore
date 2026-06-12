@@ -19,3 +19,12 @@ xcuserdata/
 *.ipa
 *.dSYM.zip
 *.dSYM
+
+# Carthage
+Carthage/Build/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
