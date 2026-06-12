@@ -16,6 +16,11 @@ enum LaunchdManager {
             .appendingPathComponent("Library/LaunchAgents")
     }
 
+    // UserDefaults key for the pmset wake date Dusk last scheduled.
+    private static let wakeDefaultsKey = "com.murphy.dusk.scheduledWakeDate"
+    // How many seconds before shutdown to wake the Mac.
+    private static let wakeLeadSeconds: Double = 30
+
     // Sync all enabled rules to launchd, remove disabled/deleted ones.
     static func sync(rules: [ScheduleRule]) {
         guard let execPath = Bundle.main.executablePath else { return }
@@ -41,6 +46,9 @@ enum LaunchdManager {
                 try? FileManager.default.removeItem(at: url)
             }
         }
+
+        // Keep the pmset wake event in sync with the nearest shutdown rule.
+        syncShutdownWake(rules: rules)
 
         // Write/reload active rules
         for rule in rules where rule.isEnabled {
@@ -95,6 +103,70 @@ enum LaunchdManager {
         let noticeURL = agentsDir.appendingPathComponent("\(labelPrefix)\(rule.id.uuidString).notice.plist")
         unload(plistURL: execURL);   try? FileManager.default.removeItem(at: execURL)
         unload(plistURL: noticeURL); try? FileManager.default.removeItem(at: noticeURL)
+    }
+
+    // MARK: - pmset wake management
+
+    /// Keep a single pmset wake event aligned with the nearest upcoming shutdown rule.
+    /// Uses precise cancel-by-date so other apps' scheduled wakes are never disturbed.
+    private static func syncShutdownWake(rules: [ScheduleRule]) {
+        let now = Date()
+        let nextShutdown = rules
+            .filter { $0.isEnabled && $0.type == .shutdown }
+            .compactMap { nextFireDate(for: $0, after: now) }
+            .min()
+
+        let prevWake = UserDefaults.standard.object(forKey: wakeDefaultsKey) as? Date
+        let newWake  = nextShutdown.map { $0.addingTimeInterval(-wakeLeadSeconds) }
+
+        // Cancel the previously stored wake when it is no longer the right time.
+        if let prev = prevWake, prev != newWake {
+            pmsetCancel(at: prev)
+            UserDefaults.standard.removeObject(forKey: wakeDefaultsKey)
+        }
+
+        // Schedule the new wake if it is in the future and not already stored.
+        if let target = newWake, target > now, target != prevWake {
+            if pmsetSchedule(at: target) {
+                UserDefaults.standard.set(target, forKey: wakeDefaultsKey)
+            }
+        }
+    }
+
+    /// Next fire date for either a one-time or weekly rule, strictly after `date`.
+    private static func nextFireDate(for rule: ScheduleRule, after date: Date) -> Date? {
+        let calendar = Calendar.current
+        if let oneTimeDate = rule.oneTimeDate {
+            var dc = calendar.dateComponents([.year, .month, .day], from: oneTimeDate)
+            dc.hour = rule.hour; dc.minute = rule.minute; dc.second = 0
+            guard let fireDate = calendar.date(from: dc) else { return nil }
+            return fireDate > date ? fireDate : nil
+        }
+        return NextTriggerCalculator.next(for: rule, after: date)
+    }
+
+    /// Returns true if the command exited 0.
+    @discardableResult
+    private static func pmsetSchedule(at date: Date) -> Bool {
+        let proc = Process()
+        proc.executableURL = URL(fileURLWithPath: "/usr/bin/pmset")
+        proc.arguments = ["schedule", "wake", pmsetDateString(date)]
+        try? proc.run(); proc.waitUntilExit()
+        return proc.terminationStatus == 0
+    }
+
+    private static func pmsetCancel(at date: Date) {
+        let proc = Process()
+        proc.executableURL = URL(fileURLWithPath: "/usr/bin/pmset")
+        proc.arguments = ["schedule", "cancel", "wake", pmsetDateString(date)]
+        try? proc.run(); proc.waitUntilExit()
+    }
+
+    private static func pmsetDateString(_ date: Date) -> String {
+        let fmt = DateFormatter()
+        fmt.locale = Locale(identifier: "en_US_POSIX")
+        fmt.dateFormat = "MM/dd/yy HH:mm:ss"
+        return fmt.string(from: date)
     }
 
     // MARK: - Private
