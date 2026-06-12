@@ -25,7 +25,8 @@ enum LaunchdManager {
     private static var plistCache: [String: Data] = [:]
 
     /// Runs a process with a 5-second timeout. Returns true if it exits 0 within the window.
-    private static func runWithTimeout(_ execURL: URL, args: [String]) -> Bool {
+    @discardableResult
+    private nonisolated static func runWithTimeout(_ execURL: URL, args: [String]) -> Bool {
         let proc = Process()
         proc.executableURL = execURL
         proc.arguments = args
