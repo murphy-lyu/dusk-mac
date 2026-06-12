@@ -2,8 +2,8 @@
 "rule.disconnectWifi" = "Wi-Fiをオフ";
 "rule.connectWifi"    = "Wi-Fiをオン";
 "rule.lockScreen"     = "画面をロック";
-"rule.systemSleep"    = "スリープ";
-"rule.displaySleep"   = "ディスプレイをスリープ";
+"rule.systemSleep"    = "Macをスリープ";
+"rule.displaySleep"   = "ディスプレイをオフ";
 "rule.shutdown"       = "シャットダウン";
 
 // Main

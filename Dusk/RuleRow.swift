@@ -113,6 +113,12 @@ struct RuleRow: View {
     private var iconName: String { rule.type.systemImage }
 
     private var weekdaysText: String {
+        if let date = rule.oneTimeDate {
+            let dateFmt = DateFormatter()
+            dateFmt.locale = .current
+            dateFmt.setLocalizedDateFormatFromTemplate("MMMd")
+            return "\(dateFmt.string(from: date)) · \(rule.timeString)"
+        }
         if rule.weekdays == Weekday.workdays {
             return "\(NSLocalizedString("row.weekdays", comment: "")) · \(rule.timeString)"
         }

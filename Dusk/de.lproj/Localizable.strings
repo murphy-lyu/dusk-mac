@@ -2,7 +2,7 @@
 "rule.disconnectWifi" = "WLAN ausschalten";
 "rule.connectWifi"    = "WLAN einschalten";
 "rule.lockScreen"     = "Bildschirm sperren";
-"rule.systemSleep"    = "Ruhezustand";
+"rule.systemSleep"    = "Mac in Ruhezustand";
 "rule.displaySleep"   = "Display ausschalten";
 "rule.shutdown"       = "Ausschalten";
 

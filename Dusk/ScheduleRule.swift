@@ -11,14 +11,11 @@ enum RuleType: String, Codable, CaseIterable {
     case lockScreen     = "lockScreen"
     case systemSleep    = "systemSleep"
     case shutdown       = "shutdown"
-    /// Deprecated — kept only so old stored rules still decode (removing the case
-    /// would make JSONDecoder fail the whole rules array). Not offered for new rules.
     case displaySleep   = "displaySleep"
 
     /// Types offered when creating/editing a rule, in light→heavy order.
-    /// `displaySleep` is intentionally excluded (deprecated, see above).
     static let selectable: [RuleType] =
-        [.disconnectWifi, .connectWifi, .lockScreen, .systemSleep, .shutdown]
+        [.disconnectWifi, .connectWifi, .displaySleep, .lockScreen, .systemSleep, .shutdown]
 
     var label: String {
         switch self {
@@ -36,9 +33,9 @@ enum RuleType: String, Codable, CaseIterable {
         case .disconnectWifi: return "wifi.slash"
         case .connectWifi:    return "wifi"
         case .lockScreen:     return "lock.fill"
-        case .systemSleep:    return "moon.fill"
+        case .systemSleep:    return "moon.zzz.fill"
         case .shutdown:       return "power"
-        case .displaySleep:   return "display"
+        case .displaySleep:   return "moon"
         }
     }
 

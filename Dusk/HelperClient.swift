@@ -47,10 +47,9 @@ final class HelperClient {
     }
 
     func lockScreen(reply: @escaping (Result<Void, HelperError>) -> Void) {
-        // CGSession -suspend locks to the login window via fast user switching.
-        // Runs in the user session, no root needed; this is the standard CLI lock.
-        run("/System/Library/CoreServices/Menu Extras/User.menu/Contents/Resources/CGSession",
-            args: ["-suspend"], reply: reply)
+        // loginwindow screenLock is the modern equivalent of CGSession -suspend on macOS 13+.
+        run("/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow",
+            args: ["screenLock"], reply: reply)
     }
 
     func systemSleep(reply: @escaping (Result<Void, HelperError>) -> Void) {

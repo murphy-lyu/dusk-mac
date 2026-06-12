@@ -105,6 +105,7 @@ struct EditRuleView: View {
                         }
                         .pickerStyle(.segmented)
                         .labelsHidden()
+                        .controlSize(.small)
                     }
                     .padding(.leading, 10)
 
@@ -214,7 +215,7 @@ struct EditRuleView: View {
         return HStack(spacing: 10) {
             Image(systemName: type.systemImage)
                 .font(.system(size: 14))
-                .frame(width: 20, alignment: .leading)
+                .frame(width: 20, alignment: .center)
                 .foregroundStyle(selected ? Color.accentColor : .secondary)
             Text(type.label)
                 .font(.subheadline)
@@ -226,7 +227,7 @@ struct EditRuleView: View {
             }
         }
         .padding(.horizontal, 10)
-        .padding(.vertical, 7)
+        .padding(.vertical, 5)
         .background(
             selected ? Color.accentColor.opacity(0.12)
             : hovered ? Color.primary.opacity(0.06)

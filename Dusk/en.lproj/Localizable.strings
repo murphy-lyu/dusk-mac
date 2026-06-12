@@ -2,8 +2,8 @@
 "rule.disconnectWifi" = "Turn Off Wi-Fi";
 "rule.connectWifi"    = "Turn On Wi-Fi";
 "rule.lockScreen"     = "Lock Screen";
-"rule.systemSleep"    = "Sleep";
-"rule.displaySleep"   = "Sleep Display";
+"rule.systemSleep"    = "Sleep Mac";
+"rule.displaySleep"   = "Turn Off Display";
 "rule.shutdown"       = "Shut Down";
 
 // Main

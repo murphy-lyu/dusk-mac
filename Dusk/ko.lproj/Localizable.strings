@@ -2,7 +2,7 @@
 "rule.disconnectWifi" = "Wi-Fi 끄기";
 "rule.connectWifi"    = "Wi-Fi 켜기";
 "rule.lockScreen"     = "화면 잠금";
-"rule.systemSleep"    = "잠자기";
+"rule.systemSleep"    = "Mac 잠자기";
 "rule.displaySleep"   = "디스플레이 끄기";
 "rule.shutdown"       = "시스템 종료";
 

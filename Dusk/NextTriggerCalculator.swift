@@ -7,9 +7,19 @@ import Foundation
 
 enum NextTriggerCalculator {
     static func next(for rule: ScheduleRule, after date: Date = Date()) -> Date? {
+        let calendar = Calendar.current
+
+        if let oneTime = rule.oneTimeDate {
+            var dc = calendar.dateComponents([.year, .month, .day], from: oneTime)
+            dc.hour   = rule.hour
+            dc.minute = rule.minute
+            dc.second = 0
+            guard let fire = calendar.date(from: dc) else { return nil }
+            return fire > date ? fire : nil
+        }
+
         guard !rule.weekdays.isEmpty else { return nil }
 
-        let calendar = Calendar.current
         let currentHour   = calendar.component(.hour, from: date)
         let currentMinute = calendar.component(.minute, from: date)
 
@@ -49,7 +59,6 @@ enum NextTriggerCalculator {
         } else if calendar.isDateInTomorrow(next) {
             return String(format: NSLocalizedString("next.tomorrow", comment: ""), timeStr)
         } else {
-            // Locale-aware short weekday + system time format
             let dayFmt = DateFormatter()
             dayFmt.locale = .current
             dayFmt.setLocalizedDateFormatFromTemplate("EEE")

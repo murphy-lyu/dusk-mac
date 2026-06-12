@@ -2,7 +2,7 @@
 "rule.disconnectWifi" = "关闭 Wi-Fi";
 "rule.connectWifi"    = "打开 Wi-Fi";
 "rule.lockScreen"     = "锁定屏幕";
-"rule.systemSleep"    = "进入睡眠";
+"rule.systemSleep"    = "Mac 休眠";
 "rule.displaySleep"   = "关闭显示器";
 "rule.shutdown"       = "关机";
 

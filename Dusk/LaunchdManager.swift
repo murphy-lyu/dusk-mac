@@ -201,14 +201,29 @@ enum LaunchdManager {
                                     execPath: String,
                                     noticeMinutes: Int) -> Data? {
         var intervals: [[String: Any]] = []
-        for wd in rule.weekdays {
-            let execMins  = rule.hour * 60 + rule.minute
+
+        if let oneTimeDate = rule.oneTimeDate {
+            // One-time rule: compute notice time relative to the execution date.
+            let execMins   = rule.hour * 60 + rule.minute
             let noticeMins = execMins - noticeMinutes
             let (h, m, dayShift) = normalizeMinutes(noticeMins)
-            // launchd weekday: 0=Sun … 6=Sat; shift back if notice crosses midnight
-            let launchdWd = ((wd.rawValue - 1) + dayShift + 7) % 7
-            intervals.append(["Hour": h, "Minute": m, "Weekday": launchdWd])
+            let cal        = Calendar.current
+            let noticeDate = cal.date(byAdding: .day, value: dayShift, to: oneTimeDate) ?? oneTimeDate
+            let comps      = cal.dateComponents([.month, .day], from: noticeDate)
+            guard let month = comps.month, let day = comps.day else { return nil }
+            intervals = [["Month": month, "Day": day, "Hour": h, "Minute": m]]
+        } else {
+            for wd in rule.weekdays {
+                let execMins   = rule.hour * 60 + rule.minute
+                let noticeMins = execMins - noticeMinutes
+                let (h, m, dayShift) = normalizeMinutes(noticeMins)
+                // launchd weekday: 0=Sun … 6=Sat; shift back if notice crosses midnight
+                let launchdWd = ((wd.rawValue - 1) + dayShift + 7) % 7
+                intervals.append(["Hour": h, "Minute": m, "Weekday": launchdWd])
+            }
         }
+
+        guard !intervals.isEmpty else { return nil }
         let dict: [String: Any] = [
             "Label":             labelPrefix + rule.id.uuidString + ".notice",
             "ProgramArguments":  [execPath, "--notice", rule.id.uuidString],
