@@ -1,0 +1,110 @@
+// Rule types
+"rule.disconnectWifi" = "WLAN ausschalten";
+"rule.connectWifi"    = "WLAN einschalten";
+"rule.lockScreen"     = "Bildschirm sperren";
+"rule.systemSleep"    = "Ruhezustand";
+"rule.displaySleep"   = "Display ausschalten";
+"rule.shutdown"       = "Ausschalten";
+
+// Main
+"main.noSchedules"    = "Noch keine Zeitpläne.";
+"main.backgroundNote" = "Zeitpläne laufen auch bei geschlossenem Dusk.";
+
+// Empty state
+"empty.title"         = "Noch keine Zeitpläne";
+"empty.subtitle"      = "Dusk kann zu einer festgelegten Zeit automatisch das WLAN ein- oder ausschalten, das Display ausschalten oder den Mac herunterfahren.";
+"empty.addButton"     = "Ersten Zeitplan hinzufügen";
+
+// Row status
+"row.notScheduled"      = "Nicht aktiv";
+"row.notScheduled.help" = "Dieser Zeitplan konnte nicht im System registriert werden. Schalte ihn aus und wieder ein oder öffne Dusk erneut.";
+
+// Shutdown confirmation
+"confirm.shutdown.title"   = "Jetzt herunterfahren?";
+"confirm.shutdown.message" = "Dein Mac wird sofort heruntergefahren. Nicht gesicherte Arbeit kann verloren gehen.";
+"confirm.shutdown.confirm" = "Herunterfahren";
+"confirm.disconnectWifi.title"   = "WLAN jetzt ausschalten?";
+"confirm.disconnectWifi.message" = "Dein Mac verliert die WLAN-Verbindung, bis das WLAN wieder eingeschaltet wird.";
+"confirm.disconnectWifi.confirm" = "Ausschalten";
+"menu.settings"       = "Einstellungen";
+"menu.history"        = "Ausführungsverlauf";
+"menu.feedback"       = "Feedback senden";
+"menu.quit"           = "Dusk beenden";
+
+// Row actions
+"row.triggerNow"      = "Jetzt auslösen";
+"row.editSchedule"    = "Zeitplan bearbeiten";
+"row.delete"          = "Löschen";
+"row.next"            = "Nächste: %@";
+"next.today"          = "Heute %@";
+"next.tomorrow"       = "Morgen %@";
+"row.weekdays"        = "Wochentage";
+"row.everyDay"        = "Täglich";
+"row.disable"         = "Deaktivieren";
+"row.enable"          = "Aktivieren";
+
+// Conflict
+"conflict.one"        = "1 Zeitplankonflikt";
+"conflict.many"       = "%d Zeitplankonflikte";
+
+// Add / Edit
+"schedule.add"        = "Zeitplan hinzufügen";
+"schedule.edit"       = "Zeitplan bearbeiten";
+"schedule.action"     = "AKTION";
+"schedule.time"       = "UHRZEIT";
+"schedule.days"       = "TAGE";
+"schedule.cancel"     = "Abbrechen";
+"schedule.save"       = "Sichern";
+"schedule.addButton"  = "Hinzufügen";
+
+// Settings
+"settings.general"        = "Allgemein";
+"settings.section.startup"   = "Start";
+"settings.section.appearance" = "Darstellung";
+"settings.section.region"   = "Region";
+"settings.about"          = "Über";
+"settings.launchAtLogin"  = "Bei Anmeldung starten";
+"settings.launchSubtitle" = "Dusk automatisch beim Login starten";
+"settings.hideDock"       = "Dock-Symbol ausblenden";
+"settings.notifyOnResult" = "Über Ausführungsergebnisse benachrichtigen";
+"settings.section.notifications" = "Mitteilungen";
+"settings.notifyFooter"   = "Wenn aktiviert, benachrichtigt dich Dusk nach einer Ausführung — damit du weißt, dass sie wirklich stattfand.";
+"settings.hideDockSub"    = "Nur das Menüleistensymbol anzeigen";
+"settings.language"       = "Sprache";
+"settings.menuBarIcon"    = "Menüleistensymbol";
+"settings.languageFooter" = "Starte Dusk neu, um die neue Sprache anzuwenden.";
+"settings.restartTitle"   = "Neustart erforderlich";
+"settings.restartMessage" = "Bitte starte Dusk neu, um die Sprachänderung zu übernehmen.";
+"settings.restartButton"  = "Jetzt neu starten";
+
+// Notifications — success
+"notif.disconnectWifi.success" = "WLAN wurde deaktiviert";
+"notif.connectWifi.success"    = "WLAN wurde aktiviert";
+"notif.lockScreen.success"     = "Bildschirm gesperrt";
+"notif.systemSleep.success"    = "Ruhezustand wird aktiviert\u{2026}";
+"notif.displaySleep.success"   = "Display wird gleich ausgeschaltet";
+"notif.shutdown.success"       = "Mac wird heruntergefahren\u{2026}";
+
+// Notifications — failure
+"notif.disconnectWifi.fail"    = "WLAN konnte nicht deaktiviert werden";
+"notif.connectWifi.fail"       = "WLAN konnte nicht aktiviert werden";
+"notif.lockScreen.fail"        = "Bildschirm konnte nicht gesperrt werden";
+"notif.systemSleep.fail"       = "Ruhezustand nicht möglich";
+"notif.displaySleep.fail"      = "Display konnte nicht ausgeschaltet werden";
+"notif.shutdown.fail"          = "Mac konnte nicht heruntergefahren werden";
+
+// History
+"history.title"       = "Verlauf";
+"history.empty"       = "Noch keine Ausführungen.";
+"history.yesterday"   = "Gestern";
+"history.clear"       = "Löschen";
+
+// Row reorder
+"row.moveUp"          = "Nach oben";
+"row.moveDown"        = "Nach unten";
+
+// About
+"about.tagline"       = "Automatisiere deine Feierabend-Routine.";
+
+// Feedback
+"feedback.subject"    = "Dusk Feedback";

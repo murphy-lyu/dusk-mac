@@ -1,0 +1,110 @@
+// Rule types
+"rule.disconnectWifi" = "Wi-Fi 끄기";
+"rule.connectWifi"    = "Wi-Fi 켜기";
+"rule.lockScreen"     = "화면 잠금";
+"rule.systemSleep"    = "잠자기";
+"rule.displaySleep"   = "디스플레이 끄기";
+"rule.shutdown"       = "시스템 종료";
+
+// Main
+"main.noSchedules"    = "예약된 작업이 없습니다.";
+"main.backgroundNote" = "Dusk를 닫아도 예약 작업이 실행됩니다.";
+
+// Empty state
+"empty.title"         = "예약된 작업이 없습니다";
+"empty.subtitle"      = "Dusk는 지정한 시간에 자동으로 Wi-Fi 켜기·끄기, 디스플레이 끄기, 시스템 종료를 실행할 수 있습니다.";
+"empty.addButton"     = "첫 예약 작업 추가";
+
+// Row status
+"row.notScheduled"      = "미등록";
+"row.notScheduled.help" = "이 작업을 시스템에 등록하지 못했습니다. 껐다가 다시 켜거나 Dusk를 다시 열어 보세요.";
+
+// Shutdown confirmation
+"confirm.shutdown.title"   = "지금 종료하시겠습니까?";
+"confirm.shutdown.message" = "Mac이 즉시 종료됩니다. 저장하지 않은 작업이 손실될 수 있습니다.";
+"confirm.shutdown.confirm" = "종료";
+"confirm.disconnectWifi.title"   = "지금 Wi-Fi를 끄시겠습니까?";
+"confirm.disconnectWifi.message" = "Wi-Fi를 다시 켤 때까지 Mac의 Wi-Fi 연결이 끊깁니다.";
+"confirm.disconnectWifi.confirm" = "끄기";
+"menu.settings"       = "환경설정";
+"menu.history"        = "실행 기록";
+"menu.feedback"       = "피드백 보내기";
+"menu.quit"           = "Dusk 종료";
+
+// Row actions
+"row.triggerNow"      = "지금 실행";
+"row.editSchedule"    = "일정 편집";
+"row.delete"          = "삭제";
+"row.next"            = "다음: %@";
+"next.today"          = "오늘 %@";
+"next.tomorrow"       = "내일 %@";
+"row.weekdays"        = "평일";
+"row.everyDay"        = "매일";
+"row.disable"         = "비활성화";
+"row.enable"          = "활성화";
+
+// Conflict
+"conflict.one"        = "일정 충돌 1건";
+"conflict.many"       = "일정 충돌 %d건";
+
+// Add / Edit
+"schedule.add"        = "일정 추가";
+"schedule.edit"       = "일정 편집";
+"schedule.action"     = "작업";
+"schedule.time"       = "시간";
+"schedule.days"       = "요일";
+"schedule.cancel"     = "취소";
+"schedule.save"       = "저장";
+"schedule.addButton"  = "추가";
+
+// Settings
+"settings.general"        = "일반";
+"settings.section.startup"   = "시작";
+"settings.section.appearance" = "화면";
+"settings.section.region"   = "지역";
+"settings.about"          = "정보";
+"settings.launchAtLogin"  = "로그인 시 시작";
+"settings.launchSubtitle" = "로그인할 때 Dusk를 자동으로 시작합니다";
+"settings.hideDock"       = "Dock 아이콘 숨기기";
+"settings.notifyOnResult" = "실행 결과 알림";
+"settings.section.notifications" = "알림";
+"settings.notifyFooter"   = "켜면 작업 실행 후 결과를 알려줍니다. 실제로 실행됐는지 확인할 수 있습니다.";
+"settings.hideDockSub"    = "메뉴 막대 아이콘만 표시";
+"settings.language"       = "언어";
+"settings.menuBarIcon"    = "메뉴 막대 아이콘";
+"settings.languageFooter" = "새 언어를 적용하려면 Dusk를 재시작하세요.";
+"settings.restartTitle"   = "재시작 필요";
+"settings.restartMessage" = "언어 변경을 적용하려면 Dusk를 재시작하세요.";
+"settings.restartButton"  = "지금 재시작";
+
+// Notifications — success
+"notif.disconnectWifi.success" = "Wi-Fi가 꺼졌습니다";
+"notif.connectWifi.success"    = "Wi-Fi가 켜졌습니다";
+"notif.lockScreen.success"     = "화면이 잠겼습니다";
+"notif.systemSleep.success"    = "잠자기로 전환하는 중\u{2026}";
+"notif.displaySleep.success"   = "디스플레이가 잠자기 상태로 전환됩니다";
+"notif.shutdown.success"       = "시스템을 종료하는 중\u{2026}";
+
+// Notifications — failure
+"notif.disconnectWifi.fail"    = "Wi-Fi를 끌 수 없습니다";
+"notif.connectWifi.fail"       = "Wi-Fi를 켤 수 없습니다";
+"notif.lockScreen.fail"        = "화면을 잠글 수 없습니다";
+"notif.systemSleep.fail"       = "잠자기로 전환할 수 없습니다";
+"notif.displaySleep.fail"      = "디스플레이를 잠재울 수 없습니다";
+"notif.shutdown.fail"          = "시스템을 종료할 수 없습니다";
+
+// History
+"history.title"       = "실행 기록";
+"history.empty"       = "아직 실행 기록이 없습니다.";
+"history.yesterday"   = "어제";
+"history.clear"       = "지우기";
+
+// Row reorder
+"row.moveUp"          = "위로 이동";
+"row.moveDown"        = "아래로 이동";
+
+// About
+"about.tagline"       = "퇴근 루틴을 자동화하세요.";
+
+// Feedback
+"feedback.subject"    = "Dusk 피드백";

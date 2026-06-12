@@ -1,0 +1,120 @@
+// Rule types
+"rule.disconnectWifi" = "关闭 Wi-Fi";
+"rule.connectWifi"    = "打开 Wi-Fi";
+"rule.lockScreen"     = "锁定屏幕";
+"rule.systemSleep"    = "进入睡眠";
+"rule.displaySleep"   = "关闭显示器";
+"rule.shutdown"       = "关机";
+
+// Main
+"main.noSchedules"    = "暂无定时任务";
+"main.backgroundNote" = "Dusk 关闭后定时任务依然有效。";
+
+// Empty state
+"empty.title"         = "还没有定时任务";
+"empty.subtitle"      = "Dusk 可以在指定时间自动打开或关闭 Wi-Fi、关闭显示器或关机。";
+"empty.addButton"     = "创建第一个任务";
+
+// Row status
+"row.notScheduled"      = "未生效";
+"row.notScheduled.help" = "该任务未能注册到系统。请尝试关闭后重新开启，或重新打开 Dusk。";
+
+// Shutdown confirmation
+"confirm.shutdown.title"   = "立即关机？";
+"confirm.shutdown.message" = "你的 Mac 将立即关机，未保存的工作可能丢失。";
+"confirm.shutdown.confirm" = "关机";
+"confirm.disconnectWifi.title"   = "立即关闭 Wi-Fi？";
+"confirm.disconnectWifi.message" = "你的 Mac 将断开 Wi-Fi 连接，直到重新打开 Wi-Fi。";
+"confirm.disconnectWifi.confirm" = "关闭";
+"menu.settings"       = "偏好设置";
+"menu.history"        = "执行记录";
+"menu.feedback"       = "发送反馈";
+"menu.quit"           = "退出 Dusk";
+
+// Row actions
+"row.triggerNow"      = "立即触发";
+"row.editSchedule"    = "编辑任务";
+"row.delete"          = "删除";
+"row.next"            = "下次：%@";
+"next.today"          = "今天 %@";
+"next.tomorrow"       = "明天 %@";
+"row.weekdays"        = "工作日";
+"row.everyDay"        = "每天";
+"row.disable"         = "禁用";
+"row.enable"          = "启用";
+
+// Conflict
+"conflict.one"        = "1 个任务冲突";
+"conflict.many"       = "%d 个任务冲突";
+
+// Add / Edit
+"schedule.add"        = "添加任务";
+"schedule.edit"       = "编辑任务";
+"schedule.action"     = "操作";
+"schedule.time"       = "时间";
+"schedule.days"       = "日期";
+"schedule.cancel"     = "取消";
+"schedule.save"       = "保存";
+"schedule.addButton"  = "添加";
+
+// Settings
+"settings.general"        = "通用";
+"settings.section.startup"   = "启动";
+"settings.section.appearance" = "界面";
+"settings.section.region"   = "地区";
+"settings.about"          = "关于";
+"settings.launchAtLogin"  = "开机自动启动";
+"settings.launchSubtitle" = "登录时自动启动 Dusk";
+"settings.hideDock"       = "隐藏 Dock 图标";
+"settings.notifyOnResult" = "任务执行结果通知";
+"settings.section.notifications" = "通知";
+"settings.notifyFooter"   = "每个任务执行后通知你结果。";
+"settings.hideDockSub"    = "仅保留菜单栏图标";
+"settings.language"       = "语言";
+"settings.menuBarIcon"    = "菜单栏图标";
+"settings.languageFooter" = "重启 Dusk 以应用新语言。";
+"settings.restartTitle"   = "需要重启";
+"settings.restartMessage" = "请重启 Dusk 以应用语言更改。";
+"settings.restartButton"  = "立即重启";
+
+// Notifications — success
+"notif.disconnectWifi.success" = "Wi-Fi 已关闭";
+"notif.connectWifi.success"    = "Wi-Fi 已打开";
+"notif.displaySleep.success"   = "显示器即将休眠";
+"notif.lockScreen.success"     = "屏幕已锁定";
+"notif.systemSleep.success"    = "即将进入睡眠\u{2026}";
+"notif.shutdown.success"       = "正在关机\u{2026}";
+
+// Notifications — failure
+"notif.disconnectWifi.fail"    = "无法关闭 Wi-Fi";
+"notif.connectWifi.fail"       = "无法打开 Wi-Fi";
+"notif.displaySleep.fail"      = "无法让显示器休眠";
+"notif.lockScreen.fail"        = "无法锁定屏幕";
+"notif.systemSleep.fail"       = "无法进入睡眠";
+"notif.shutdown.fail"          = "无法关机";
+
+// History
+"history.title"       = "执行记录";
+"history.empty"       = "暂无执行记录。";
+"history.yesterday"   = "昨天";
+"history.clear"       = "清空";
+
+// Row reorder
+"row.moveUp"          = "上移";
+"row.moveDown"        = "下移";
+
+// About
+"about.tagline"       = "自动化你的下班流程。";
+
+// Feedback
+"feedback.subject"    = "Dusk 反馈";
+
+// Advance notice
+"schedule.notice.toggle"   = "执行前提醒我";
+"schedule.notice.minute"   = "提前 %d 分钟";
+"schedule.notice.minutes"  = "提前 %d 分钟";
+"notice.autoRunHint"       = "未操作将自动执行";
+"notice.dismiss"           = "知道了";
+"notice.snooze15"          = "推迟 15 分钟";
+"notice.snooze30"          = "推迟 30 分钟";
+"notice.skipToday"         = "今天跳过";

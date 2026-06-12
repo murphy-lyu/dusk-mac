@@ -1,0 +1,110 @@
+// Rule types
+"rule.disconnectWifi" = "Wi-Fiをオフ";
+"rule.connectWifi"    = "Wi-Fiをオン";
+"rule.lockScreen"     = "画面をロック";
+"rule.systemSleep"    = "スリープ";
+"rule.displaySleep"   = "ディスプレイをスリープ";
+"rule.shutdown"       = "シャットダウン";
+
+// Main
+"main.noSchedules"    = "スケジュールがありません";
+"main.backgroundNote" = "Duskを閉じてもスケジュールは実行されます。";
+
+// Empty state
+"empty.title"         = "スケジュールがありません";
+"empty.subtitle"      = "Duskは指定した時刻に自動でWi-Fiのオン・オフ、ディスプレイのスリープ、シャットダウンを実行できます。";
+"empty.addButton"     = "最初のスケジュールを追加";
+
+// Row status
+"row.notScheduled"      = "未登録";
+"row.notScheduled.help" = "このスケジュールをシステムに登録できませんでした。オフにしてから再度オンにするか、Duskを開き直してください。";
+
+// Shutdown confirmation
+"confirm.shutdown.title"   = "今すぐシャットダウンしますか？";
+"confirm.shutdown.message" = "Macがすぐにシャットダウンします。保存していない作業は失われる可能性があります。";
+"confirm.shutdown.confirm" = "シャットダウン";
+"confirm.disconnectWifi.title"   = "今すぐWi-Fiをオフにしますか？";
+"confirm.disconnectWifi.message" = "Wi-Fiを再びオンにするまで、MacはWi-Fi接続を失います。";
+"confirm.disconnectWifi.confirm" = "オフにする";
+"menu.settings"       = "環境設定";
+"menu.history"        = "実行履歴";
+"menu.feedback"       = "フィードバックを送る";
+"menu.quit"           = "Duskを終了";
+
+// Row actions
+"row.triggerNow"      = "今すぐ実行";
+"row.editSchedule"    = "スケジュールを編集";
+"row.delete"          = "削除";
+"row.next"            = "次回：%@";
+"next.today"          = "今日 %@";
+"next.tomorrow"       = "明日 %@";
+"row.weekdays"        = "平日";
+"row.everyDay"        = "毎日";
+"row.disable"         = "無効にする";
+"row.enable"          = "有効にする";
+
+// Conflict
+"conflict.one"        = "スケジュールの競合が1件あります";
+"conflict.many"       = "スケジュールの競合が%d件あります";
+
+// Add / Edit
+"schedule.add"        = "スケジュールを追加";
+"schedule.edit"       = "スケジュールを編集";
+"schedule.action"     = "アクション";
+"schedule.time"       = "時刻";
+"schedule.days"       = "曜日";
+"schedule.cancel"     = "キャンセル";
+"schedule.save"       = "保存";
+"schedule.addButton"  = "追加";
+
+// Settings
+"settings.general"        = "一般";
+"settings.section.startup"   = "起動";
+"settings.section.appearance" = "表示";
+"settings.section.region"   = "地域";
+"settings.about"          = "Duskについて";
+"settings.launchAtLogin"  = "ログイン時に起動";
+"settings.launchSubtitle" = "ログイン時にDuskを自動的に起動します";
+"settings.hideDock"       = "Dockアイコンを隠す";
+"settings.notifyOnResult" = "実行結果を通知";
+"settings.section.notifications" = "通知";
+"settings.notifyFooter"   = "オンにすると、タスクの実行後に結果を通知します。本当に実行されたか確認できます。";
+"settings.hideDockSub"    = "メニューバーアイコンのみ表示";
+"settings.language"       = "言語";
+"settings.menuBarIcon"    = "メニューバーアイコン";
+"settings.languageFooter" = "新しい言語を適用するにはDuskを再起動してください。";
+"settings.restartTitle"   = "再起動が必要です";
+"settings.restartMessage" = "言語変更を適用するにはDuskを再起動してください。";
+"settings.restartButton"  = "今すぐ再起動";
+
+// Notifications — success
+"notif.disconnectWifi.success" = "Wi-Fiをオフにしました";
+"notif.connectWifi.success"    = "Wi-Fiをオンにしました";
+"notif.lockScreen.success"     = "画面をロックしました";
+"notif.systemSleep.success"    = "スリープします\u{2026}";
+"notif.displaySleep.success"   = "ディスプレイがスリープします";
+"notif.shutdown.success"       = "シャットダウンしています\u{2026}";
+
+// Notifications — failure
+"notif.disconnectWifi.fail"    = "Wi-Fiをオフにできませんでした";
+"notif.connectWifi.fail"       = "Wi-Fiをオンにできませんでした";
+"notif.lockScreen.fail"        = "画面をロックできませんでした";
+"notif.systemSleep.fail"       = "スリープできませんでした";
+"notif.displaySleep.fail"      = "ディスプレイをスリープできませんでした";
+"notif.shutdown.fail"          = "シャットダウンできませんでした";
+
+// History
+"history.title"       = "実行履歴";
+"history.empty"       = "まだ実行記録がありません。";
+"history.yesterday"   = "昨日";
+"history.clear"       = "クリア";
+
+// Row reorder
+"row.moveUp"          = "上へ移動";
+"row.moveDown"        = "下へ移動";
+
+// About
+"about.tagline"       = "退勤ルーティンを自動化しよう。";
+
+// Feedback
+"feedback.subject"    = "Dusk フィードバック";

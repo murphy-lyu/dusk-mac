@@ -1,0 +1,120 @@
+// Rule types
+"rule.disconnectWifi" = "Turn Off Wi-Fi";
+"rule.connectWifi"    = "Turn On Wi-Fi";
+"rule.lockScreen"     = "Lock Screen";
+"rule.systemSleep"    = "Sleep";
+"rule.displaySleep"   = "Sleep Display";
+"rule.shutdown"       = "Shut Down";
+
+// Main
+"main.noSchedules"    = "No schedules yet.";
+"main.backgroundNote" = "Schedules run even when Dusk is closed.";
+
+// Empty state
+"empty.title"         = "No schedules yet";
+"empty.subtitle"      = "Dusk can automatically turn Wi-Fi on or off, sleep the display, or shut down your Mac at a set time.";
+"empty.addButton"     = "Add Your First Schedule";
+
+// Row status
+"row.notScheduled"      = "Not scheduled";
+"row.notScheduled.help" = "This schedule couldn't be registered with the system. Try toggling it off and on, or reopen Dusk.";
+
+// Shutdown confirmation
+"confirm.shutdown.title"   = "Shut down now?";
+"confirm.shutdown.message" = "Your Mac will shut down immediately. Unsaved work may be lost.";
+"confirm.shutdown.confirm" = "Shut Down";
+"confirm.disconnectWifi.title"   = "Turn off Wi-Fi now?";
+"confirm.disconnectWifi.message" = "Your Mac will lose its Wi-Fi connection until Wi-Fi is turned back on.";
+"confirm.disconnectWifi.confirm" = "Turn Off";
+"menu.settings"       = "Preferences";
+"menu.history"        = "Execution History";
+"menu.feedback"       = "Send Feedback";
+"menu.quit"           = "Quit Dusk";
+
+// Row actions
+"row.triggerNow"      = "Trigger Now";
+"row.editSchedule"    = "Edit Schedule";
+"row.delete"          = "Delete";
+"row.next"            = "Next: %@";
+"next.today"          = "Today %@";
+"next.tomorrow"       = "Tomorrow %@";
+"row.weekdays"        = "Weekdays";
+"row.everyDay"        = "Every day";
+"row.disable"         = "Disable";
+"row.enable"          = "Enable";
+
+// Conflict
+"conflict.one"        = "1 schedule conflict";
+"conflict.many"       = "%d schedule conflicts";
+
+// Add / Edit
+"schedule.add"        = "Add Schedule";
+"schedule.edit"       = "Edit Schedule";
+"schedule.action"     = "ACTION";
+"schedule.time"       = "TIME";
+"schedule.days"       = "DAYS";
+"schedule.cancel"     = "Cancel";
+"schedule.save"       = "Save";
+"schedule.addButton"  = "Add";
+
+// Settings
+"settings.general"        = "General";
+"settings.section.startup"   = "Startup";
+"settings.section.appearance" = "Appearance";
+"settings.section.region"   = "Region";
+"settings.about"          = "About";
+"settings.launchAtLogin"  = "Launch at login";
+"settings.launchSubtitle" = "Start Dusk automatically on login";
+"settings.hideDock"       = "Hide Dock icon";
+"settings.notifyOnResult" = "Notify me of task results";
+"settings.section.notifications" = "Notifications";
+"settings.notifyFooter"   = "Get notified after each task runs.";
+"settings.hideDockSub"    = "Keep only the menu bar icon";
+"settings.language"       = "Language";
+"settings.menuBarIcon"    = "Menu Bar Icon";
+"settings.languageFooter" = "Restart Dusk to apply the new language.";
+"settings.restartTitle"   = "Restart Required";
+"settings.restartMessage" = "Please restart Dusk to apply the language change.";
+"settings.restartButton"  = "Restart Now";
+
+// Notifications — success
+"notif.disconnectWifi.success" = "Wi-Fi turned off";
+"notif.connectWifi.success"    = "Wi-Fi turned on";
+"notif.displaySleep.success"   = "Display going to sleep";
+"notif.lockScreen.success"     = "Screen locked";
+"notif.systemSleep.success"    = "Going to sleep\u{2026}";
+"notif.shutdown.success"       = "Shutting down\u{2026}";
+
+// Notifications — failure
+"notif.disconnectWifi.fail"    = "Couldn't turn off Wi-Fi";
+"notif.connectWifi.fail"       = "Couldn't turn on Wi-Fi";
+"notif.displaySleep.fail"      = "Couldn't sleep the display";
+"notif.lockScreen.fail"        = "Couldn't lock the screen";
+"notif.systemSleep.fail"       = "Couldn't sleep";
+"notif.shutdown.fail"          = "Couldn't shut down";
+
+// History
+"history.title"       = "History";
+"history.empty"       = "No executions yet.";
+"history.yesterday"   = "Yesterday";
+"history.clear"       = "Clear";
+
+// Row reorder
+"row.moveUp"          = "Move Up";
+"row.moveDown"        = "Move Down";
+
+// About
+"about.tagline"       = "Automate your end-of-day routine.";
+
+// Feedback
+"feedback.subject"    = "Dusk Feedback";
+
+// Advance notice
+"schedule.notice.toggle"   = "Remind me before executing";
+"schedule.notice.minute"   = "%d minute before";
+"schedule.notice.minutes"  = "%d minutes before";
+"notice.autoRunHint"       = "Runs automatically unless you act";
+"notice.dismiss"           = "Dismiss";
+"notice.snooze15"          = "Delay 15 min";
+"notice.snooze30"          = "Delay 30 min";
+"notice.skipToday"         = "Skip Today";
