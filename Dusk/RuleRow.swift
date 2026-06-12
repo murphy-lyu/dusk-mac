@@ -26,7 +26,7 @@ struct RuleRow: View {
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(rule.type.label)
-                    .font(.subheadline)
+                    .font(.subheadline.weight(.medium))
                     .foregroundStyle(rule.isEnabled ? .primary : .secondary)
                     .lineLimit(1)
                 Text(weekdaysText)
