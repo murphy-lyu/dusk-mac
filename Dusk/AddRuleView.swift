@@ -16,7 +16,9 @@ struct AddRuleView: View {
     @State private var noticeEnabled: Bool = false
     @State private var noticeMinutes: Int = 5
     @State private var isOneTime: Bool = false
-    @State private var onceDate: Date = Date()
+    @State private var onceYear: Int = Calendar.current.component(.year,  from: Date())
+    @State private var onceMonth: Int = Calendar.current.component(.month, from: Date())
+    @State private var onceDay: Int = Calendar.current.component(.day,   from: Date())
     @State private var hoveredType: RuleType?
     @State private var hoveredDay: Weekday?
 
@@ -94,12 +96,15 @@ struct AddRuleView: View {
                     // Content row indented to align with picker text (icon 20 + gap 10 = 30pt)
                     // Both branches use the same frame height so the window never resizes.
                     if isOneTime {
-                        DatePicker("", selection: $onceDate,
-                                   in: Date()..., displayedComponents: .date)
-                            .labelsHidden()
-                            .datePickerStyle(.compact)
-                            .frame(height: 28)
-                            .padding(.leading, 40)
+                        HStack(spacing: 6) {
+                            TimeField(value: $onceYear,  range: 2024...2099, maxDigits: 4, width: 52)
+                            Text("/").foregroundStyle(.secondary)
+                            TimeField(value: $onceMonth, range: 1...12)
+                            Text("/").foregroundStyle(.secondary)
+                            TimeField(value: $onceDay,   range: 1...31)
+                        }
+                        .frame(height: 28)
+                        .padding(.leading, 40)
                     } else {
                         HStack(spacing: 4) {
                             ForEach(Weekday.allCases) { day in
@@ -170,7 +175,10 @@ struct AddRuleView: View {
                         minute: minute,
                         weekdays: isOneTime ? [] : selectedWeekdays,
                         advanceNoticeMinutes: notice,
-                        oneTimeDate: isOneTime ? onceDate : nil
+                        oneTimeDate: isOneTime ? DateComponents(
+                            calendar: .current,
+                            year: onceYear, month: onceMonth, day: onceDay
+                        ).date : nil
                     ))
                     active = .main
                 } label: {

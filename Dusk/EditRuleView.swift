@@ -17,7 +17,9 @@ struct EditRuleView: View {
     @State private var noticeEnabled: Bool
     @State private var noticeMinutes: Int
     @State private var isOneTime: Bool
-    @State private var onceDate: Date
+    @State private var onceYear: Int
+    @State private var onceMonth: Int
+    @State private var onceDay: Int
     @State private var hoveredType: RuleType?
     @State private var hoveredDay: Weekday?
 
@@ -31,7 +33,11 @@ struct EditRuleView: View {
         self._noticeEnabled    = State(initialValue: rule.advanceNoticeMinutes != nil)
         self._noticeMinutes    = State(initialValue: rule.advanceNoticeMinutes ?? 5)
         self._isOneTime        = State(initialValue: rule.isOneTime)
-        self._onceDate         = State(initialValue: rule.oneTimeDate ?? Date())
+        let base = rule.oneTimeDate ?? Date()
+        let cal  = Calendar.current
+        self._onceYear  = State(initialValue: cal.component(.year,  from: base))
+        self._onceMonth = State(initialValue: cal.component(.month, from: base))
+        self._onceDay   = State(initialValue: cal.component(.day,   from: base))
     }
 
     var body: some View {
@@ -104,12 +110,15 @@ struct EditRuleView: View {
 
                     // Content row indented to align with picker text (icon 20 + gap 10 = 30pt)
                     if isOneTime {
-                        DatePicker("", selection: $onceDate,
-                                   in: Date()..., displayedComponents: .date)
-                            .labelsHidden()
-                            .datePickerStyle(.compact)
-                            .frame(height: 28)
-                            .padding(.leading, 40)
+                        HStack(spacing: 6) {
+                            TimeField(value: $onceYear,  range: 2024...2099, maxDigits: 4, width: 52)
+                            Text("/").foregroundStyle(.secondary)
+                            TimeField(value: $onceMonth, range: 1...12)
+                            Text("/").foregroundStyle(.secondary)
+                            TimeField(value: $onceDay,   range: 1...31)
+                        }
+                        .frame(height: 28)
+                        .padding(.leading, 40)
                     } else {
                         HStack(spacing: 4) {
                             ForEach(Weekday.allCases) { day in
@@ -177,7 +186,10 @@ struct EditRuleView: View {
                     updated.minute   = minute
                     updated.weekdays = selectedWeekdays
                     updated.advanceNoticeMinutes = noticeEnabled ? noticeMinutes : nil
-                    updated.oneTimeDate = isOneTime ? onceDate : nil
+                    updated.oneTimeDate = isOneTime ? DateComponents(
+                        calendar: .current,
+                        year: onceYear, month: onceMonth, day: onceDay
+                    ).date : nil
                     store.update(updated)
                     active = .main
                 } label: {
