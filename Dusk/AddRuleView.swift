@@ -75,53 +75,51 @@ struct AddRuleView: View {
                     Text(LocalizedStringKey("schedule.days"))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
-                    Picker("", selection: $isOneTime) {
-                        Text(LocalizedStringKey("schedule.recurring")).tag(false)
-                        Text(LocalizedStringKey("schedule.once")).tag(true)
-                    }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
 
-                    if isOneTime {
-                        HStack(spacing: 10) {
-                            Image(systemName: "calendar")
-                                .font(.system(size: 14))
-                                .frame(width: 20, alignment: .leading)
-                                .foregroundStyle(.secondary)
-                            DatePicker("", selection: $onceDate,
-                                       in: Date()..., displayedComponents: .date)
-                                .labelsHidden()
-                                .datePickerStyle(.compact)
+                    // Icon + segmented on the same row
+                    HStack(spacing: 10) {
+                        Image(systemName: "calendar")
+                            .font(.system(size: 14))
+                            .frame(width: 20, alignment: .leading)
+                            .foregroundStyle(.secondary)
+                        Picker("", selection: $isOneTime) {
+                            Text(LocalizedStringKey("schedule.recurring")).tag(false)
+                            Text(LocalizedStringKey("schedule.once")).tag(true)
                         }
-                        .padding(.leading, 10)
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                    }
+                    .padding(.leading, 10)
+
+                    // Content row indented to align with picker text (icon 20 + gap 10 = 30pt)
+                    if isOneTime {
+                        DatePicker("", selection: $onceDate,
+                                   in: Date()..., displayedComponents: .date)
+                            .labelsHidden()
+                            .datePickerStyle(.compact)
+                            .padding(.leading, 40)
                     } else {
-                        HStack(spacing: 10) {
-                            Image(systemName: "calendar")
-                                .font(.system(size: 14))
-                                .frame(width: 20, alignment: .leading)
-                                .foregroundStyle(.secondary)
-                            HStack(spacing: 4) {
-                                ForEach(Weekday.allCases) { day in
-                                    let selected = selectedWeekdays.contains(day)
-                                    Text(day.localizedShort)
-                                        .font(.caption)
-                                        .frame(width: 28, height: 24)
-                                        .background(
-                                            selected ? Color.accentColor
-                                            : (hoveredDay == day ? Color.secondary.opacity(0.30)
-                                                                 : Color.secondary.opacity(0.15)),
-                                            in: RoundedRectangle(cornerRadius: 4)
-                                        )
-                                        .foregroundStyle(selected ? .white : .primary)
-                                        .onHover { hoveredDay = $0 ? day : (hoveredDay == day ? nil : hoveredDay) }
-                                        .onTapGesture {
-                                            if selected { selectedWeekdays.remove(day) }
-                                            else        { selectedWeekdays.insert(day) }
-                                        }
-                                }
+                        HStack(spacing: 4) {
+                            ForEach(Weekday.allCases) { day in
+                                let selected = selectedWeekdays.contains(day)
+                                Text(day.localizedShort)
+                                    .font(.caption)
+                                    .frame(width: 28, height: 24)
+                                    .background(
+                                        selected ? Color.accentColor
+                                        : (hoveredDay == day ? Color.secondary.opacity(0.30)
+                                                             : Color.secondary.opacity(0.15)),
+                                        in: RoundedRectangle(cornerRadius: 4)
+                                    )
+                                    .foregroundStyle(selected ? .white : .primary)
+                                    .onHover { hoveredDay = $0 ? day : (hoveredDay == day ? nil : hoveredDay) }
+                                    .onTapGesture {
+                                        if selected { selectedWeekdays.remove(day) }
+                                        else        { selectedWeekdays.insert(day) }
+                                    }
                             }
                         }
-                        .padding(.leading, 10)
+                        .padding(.leading, 40)
                     }
                 }
 
