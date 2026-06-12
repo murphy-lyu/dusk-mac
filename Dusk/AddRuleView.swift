@@ -92,11 +92,13 @@ struct AddRuleView: View {
                     .padding(.leading, 10)
 
                     // Content row indented to align with picker text (icon 20 + gap 10 = 30pt)
+                    // Both branches use the same frame height so the window never resizes.
                     if isOneTime {
                         DatePicker("", selection: $onceDate,
                                    in: Date()..., displayedComponents: .date)
                             .labelsHidden()
                             .datePickerStyle(.compact)
+                            .frame(height: 28)
                             .padding(.leading, 40)
                     } else {
                         HStack(spacing: 4) {
@@ -119,6 +121,7 @@ struct AddRuleView: View {
                                     }
                             }
                         }
+                        .frame(height: 28)
                         .padding(.leading, 40)
                     }
                 }

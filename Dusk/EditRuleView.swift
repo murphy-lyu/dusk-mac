@@ -108,6 +108,7 @@ struct EditRuleView: View {
                                    in: Date()..., displayedComponents: .date)
                             .labelsHidden()
                             .datePickerStyle(.compact)
+                            .frame(height: 28)
                             .padding(.leading, 40)
                     } else {
                         HStack(spacing: 4) {
@@ -130,6 +131,7 @@ struct EditRuleView: View {
                                     }
                             }
                         }
+                        .frame(height: 28)
                         .padding(.leading, 40)
                     }
                 }
