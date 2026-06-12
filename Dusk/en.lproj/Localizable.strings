@@ -56,8 +56,8 @@
 "schedule.cancel"     = "Cancel";
 "schedule.save"       = "Save";
 "schedule.addButton"  = "Add";
-"schedule.recurring"  = "Repeat Weekly";
-"schedule.once"       = "One Time";
+"schedule.recurring"  = "Weekly";
+"schedule.once"       = "Once";
 "schedule.sleepNote"  = "If your Mac is asleep at the scheduled time, this task will run when it wakes.";
 "schedule.shutdownNote" = "Shut Down will force-quit all apps. Unsaved work will be lost.";
 

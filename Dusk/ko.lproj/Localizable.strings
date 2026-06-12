@@ -56,8 +56,8 @@
 "schedule.cancel"     = "취소";
 "schedule.save"       = "저장";
 "schedule.addButton"  = "추가";
-"schedule.recurring"  = "매주 반복";
-"schedule.once"       = "한 번만";
+"schedule.recurring"  = "매주";
+"schedule.once"       = "한 번";
 "schedule.sleepNote"  = "예약 시간에 Mac이 잠자기 상태이면, 깨어난 후에 실행됩니다.";
 "schedule.shutdownNote" = "시스템 종료 시 모든 앱이 강제 종료됩니다. 저장하지 않은 작업이 손실됩니다.";
 

@@ -56,8 +56,8 @@
 "schedule.cancel"     = "キャンセル";
 "schedule.save"       = "保存";
 "schedule.addButton"  = "追加";
-"schedule.recurring"  = "毎週繰り返す";
-"schedule.once"       = "1回だけ";
+"schedule.recurring"  = "毎週";
+"schedule.once"       = "1回のみ";
 "schedule.sleepNote"  = "予定時刻にMacがスリープ中の場合、起動後に実行されます。";
 "schedule.shutdownNote" = "シャットダウンすると全アプリが強制終了します。未保存のデータは失われます。";
 

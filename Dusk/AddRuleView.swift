@@ -83,7 +83,7 @@ struct AddRuleView: View {
                         }
                         .pickerStyle(.segmented)
                         .labelsHidden()
-                        .frame(width: 152)
+                        .frame(width: 120)
                     }
 
                     if isOneTime {
