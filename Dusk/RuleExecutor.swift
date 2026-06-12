@@ -9,6 +9,10 @@ final class RuleExecutor {
     static let shared = RuleExecutor()
     private init() {}
 
+    // Tracks rule IDs whose execution is currently in-flight, preventing
+    // concurrent triggers of the same rule (e.g. launchd double-fire).
+    private var executingRuleIDs = Set<UUID>()
+
     func execute(rule: ScheduleRule, completion: ((Result<Void, HelperError>) -> Void)? = nil) {
         let helper = HelperClient.shared
         let reply: (Result<Void, HelperError>) -> Void = { result in
@@ -36,14 +40,24 @@ final class RuleExecutor {
     }
 
     func execute(ruleId: String, completion: (() -> Void)? = nil) {
-        guard let uuid = UUID(uuidString: ruleId),
-              let rule = RulesStore.shared.rules.first(where: { $0.id == uuid }),
+        guard let uuid = UUID(uuidString: ruleId) else { completion?(); return }
+
+        guard let rule = RulesStore.shared.rules.first(where: { $0.id == uuid }),
               rule.isEnabled
-        else { completion?(); return }
+        else {
+            NSLog("[Dusk] Rule %@ not found or disabled — skipping execution", uuid.uuidString)
+            completion?()
+            return
+        }
+
+        // M-2: Prevent concurrent execution of the same rule
+        guard !executingRuleIDs.contains(uuid) else { completion?(); return }
+        executingRuleIDs.insert(uuid)
 
         // User chose "Skip Today" in the advance-notice window
         if AdvanceNoticeManager.shouldSkipToday(ruleId: uuid) {
             AdvanceNoticeManager.clearSkip(for: uuid)
+            executingRuleIDs.remove(uuid)
             completion?()
             return
         }
@@ -51,6 +65,7 @@ final class RuleExecutor {
         // Original scheduled job fired while execution was snoozed —
         // the one-time snooze launchd job will fire at the deferred time instead.
         if AdvanceNoticeManager.isSnoozed(ruleId: uuid) {
+            executingRuleIDs.remove(uuid)
             completion?()
             return
         }
@@ -59,15 +74,16 @@ final class RuleExecutor {
         AdvanceNoticeManager.clearSnooze(for: uuid)
         AdvanceNoticeManager.removeSnoozedJob(ruleId: uuid)
 
-        // A one-time rule is removed BEFORE executing: the action (sleep/shutdown)
-        // may suspend this process before any completion callback runs, so we can't
-        // rely on cleanup afterward. Removing up-front also unregisters its launchd
-        // job, guaranteeing it never fires a second time.
-        if rule.isOneTime {
-            RulesStore.shared.remove(rule: rule)
+        // H-4: Execute first, then remove the one-time rule on success.
+        // The rule is kept in the store until we know the action completed —
+        // if the process is suspended mid-flight the rule survives for retry.
+        execute(rule: rule) { [self] result in
+            self.executingRuleIDs.remove(uuid)
+            if case .success = result, rule.isOneTime {
+                DispatchQueue.main.async { RulesStore.shared.remove(rule: rule) }
+            }
+            completion?()
         }
-
-        execute(rule: rule) { _ in completion?() }
     }
 
     /// Called when a `--notice` launch argument is received. Shows the advance-

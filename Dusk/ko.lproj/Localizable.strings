@@ -112,3 +112,13 @@
 
 // Feedback
 "feedback.subject"    = "Dusk 피드백";
+
+// Advance notice
+"schedule.notice.toggle"  = "실행 전 알림";
+"schedule.notice.minute"  = "%d분 전";
+"schedule.notice.minutes" = "%d분 전";
+"notice.autoRunHint"      = "조작하지 않으면 자동 실행됩니다";
+"notice.dismiss"          = "확인";
+"notice.snooze15"         = "15분 연기";
+"notice.snooze30"         = "30분 연기";
+"notice.skipToday"        = "오늘 건너뛰기";

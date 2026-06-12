@@ -32,6 +32,7 @@ struct AddRuleView: View {
                     Image(systemName: "chevron.left")
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(Text("Back"))
                 Text(LocalizedStringKey("schedule.add"))
                     .font(.headline)
                 Spacer()
@@ -106,6 +107,13 @@ struct AddRuleView: View {
                         }
                         .frame(height: 28)
                         .padding(.leading, 40)
+                        let validDate = DateComponents(calendar: .current, year: onceYear, month: onceMonth, day: onceDay).date
+                        if validDate == nil {
+                            Text("Invalid date")
+                                .font(.caption2)
+                                .foregroundStyle(.red)
+                                .padding(.leading, 40)
+                        }
                     } else {
                         HStack(spacing: 4) {
                             ForEach(Weekday.allCases) { day in
@@ -129,6 +137,12 @@ struct AddRuleView: View {
                         }
                         .frame(height: 28)
                         .padding(.leading, 40)
+                        if selectedWeekdays.isEmpty {
+                            Text("Select at least one day")
+                                .font(.caption2)
+                                .foregroundStyle(.red)
+                                .padding(.leading, 40)
+                        }
                     }
                 }
 
@@ -189,13 +203,24 @@ struct AddRuleView: View {
                 .buttonStyle(.borderedProminent)
                 .frame(width: 100)
                 .keyboardShortcut(.defaultAction)
-                .disabled(!isOneTime && selectedWeekdays.isEmpty)
+                .disabled(saveDisabled)
             }
             .padding(.horizontal, 12)
             .padding(.top, 14)
             .padding(.bottom, 10)
         }
         .frame(width: 300)
+    }
+
+    private var saveDisabled: Bool {
+        if isOneTime {
+            guard let date = DateComponents(
+                calendar: .current,
+                year: onceYear, month: onceMonth, day: onceDay
+            ).date else { return true }
+            return date < Calendar.current.startOfDay(for: Date())
+        }
+        return selectedWeekdays.isEmpty
     }
 
     private func actionRow(_ type: RuleType) -> some View {

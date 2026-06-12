@@ -60,17 +60,17 @@ enum AdvanceNoticeManager {
         removePlist(at: plistURL)   // clean up any prior snooze job
 
         let cal   = Calendar.current
-        let comps = cal.dateComponents([.month, .day, .hour, .minute], from: date)
-        guard let month = comps.month, let day   = comps.day,
-              let hour  = comps.hour, let minute = comps.minute else { return }
+        let comps = cal.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        guard let year  = comps.year,  let month = comps.month, let day    = comps.day,
+              let hour  = comps.hour,  let minute = comps.minute else { return }
 
         let dict: [String: Any] = [
             "Label":             label,
             "ProgramArguments":  [execPath, "--rule", rule.id.uuidString],
-            // Month + Day pins to a specific date; the job repeats only once a year
-            // which is fine — RuleExecutor removes this plist after execution.
-            "StartCalendarInterval": [["Month": month, "Day": day,
-                                       "Hour": hour,   "Minute": minute]],
+            // Year + Month + Day pins to an exact calendar date, so the job fires
+            // once and never repeats. RuleExecutor removes this plist after execution.
+            "StartCalendarInterval": [["Year": year, "Month": month, "Day": day,
+                                       "Hour": hour, "Minute": minute]],
             "RunAtLoad": false
         ]
         guard let data = try? PropertyListSerialization.data(
@@ -83,6 +83,30 @@ enum AdvanceNoticeManager {
         let label    = "com.murphy.dusk.rule.\(ruleId.uuidString).snooze"
         let plistURL = agentsDir.appendingPathComponent("\(label).plist")
         removePlist(at: plistURL)
+    }
+
+    // MARK: - Orphan Plist Cleanup
+
+    /// Removes launchd jobs and plist files for rules that no longer exist.
+    /// Call at app startup, passing the set of all current rule IDs.
+    static func cleanupOrphanedPlists(validRuleIDs: Set<UUID>) {
+        let existing = (try? FileManager.default.contentsOfDirectory(
+            at: agentsDir, includingPropertiesForKeys: nil)) ?? []
+        for url in existing {
+            let stem = url.deletingPathExtension().lastPathComponent
+            guard stem.hasPrefix("com.murphy.dusk.rule.") else { continue }
+            let parts = stem.components(separatedBy: ".")
+            // Expect at least: com . murphy . dusk . rule . <UUID> (5 parts minimum)
+            guard parts.count >= 5, let uuid = UUID(uuidString: parts[4]) else { continue }
+            if !validRuleIDs.contains(uuid) {
+                let proc = Process()
+                proc.executableURL = URL(fileURLWithPath: "/bin/launchctl")
+                proc.arguments = ["unload", url.path]
+                proc.standardOutput = Pipe(); proc.standardError = Pipe()
+                try? proc.run(); proc.waitUntilExit()
+                try? FileManager.default.removeItem(at: url)
+            }
+        }
     }
 
     // MARK: - Helpers

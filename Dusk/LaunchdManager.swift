@@ -21,6 +21,23 @@ enum LaunchdManager {
     // How many seconds before shutdown to wake the Mac.
     private static let wakeLeadSeconds: Double = 30
 
+    // Cache of plist data last written for each label — used to skip unnecessary reloads.
+    private static var plistCache: [String: Data] = [:]
+
+    /// Runs a process with a 5-second timeout. Returns true if it exits 0 within the window.
+    private static func runWithTimeout(_ execURL: URL, args: [String]) -> Bool {
+        let proc = Process()
+        proc.executableURL = execURL
+        proc.arguments = args
+        proc.standardOutput = Pipe()
+        proc.standardError = Pipe()
+        do { try proc.run() } catch { return false }
+        let sema = DispatchSemaphore(value: 0)
+        DispatchQueue.global(qos: .utility).async { proc.waitUntilExit(); sema.signal() }
+        if sema.wait(timeout: .now() + 5) == .timedOut { proc.terminate(); return false }
+        return proc.terminationStatus == 0
+    }
+
     // Sync all enabled rules to launchd, remove disabled/deleted ones.
     static func sync(rules: [ScheduleRule]) {
         guard let execPath = Bundle.main.executablePath else { return }
@@ -44,6 +61,7 @@ enum LaunchdManager {
             if !activeLabels.contains(label) {
                 unload(plistURL: url)
                 try? FileManager.default.removeItem(at: url)
+                plistCache.removeValue(forKey: label)
             }
         }
 
@@ -53,24 +71,33 @@ enum LaunchdManager {
         // Write/reload active rules
         for rule in rules where rule.isEnabled {
             // Execution job
-            let execURL = agentsDir.appendingPathComponent("\(labelPrefix)\(rule.id.uuidString).plist")
+            let execLabel = labelPrefix + rule.id.uuidString
+            let execURL = agentsDir.appendingPathComponent("\(execLabel).plist")
             if let data = executionPlist(for: rule, execPath: execPath) {
-                try? data.write(to: execURL)
-                unload(plistURL: execURL)
-                load(plistURL: execURL)
+                if data != plistCache[execLabel] {
+                    try? data.write(to: execURL)
+                    unload(plistURL: execURL)
+                    load(plistURL: execURL)
+                    plistCache[execLabel] = data
+                }
             }
 
             // Notice job (optional)
-            let noticeURL = agentsDir.appendingPathComponent("\(labelPrefix)\(rule.id.uuidString).notice.plist")
+            let noticeLabel = labelPrefix + rule.id.uuidString + ".notice"
+            let noticeURL = agentsDir.appendingPathComponent("\(noticeLabel).plist")
             if let minutes = rule.advanceNoticeMinutes,
                let data = noticePlist(for: rule, execPath: execPath, noticeMinutes: minutes) {
-                try? data.write(to: noticeURL)
-                unload(plistURL: noticeURL)
-                load(plistURL: noticeURL)
+                if data != plistCache[noticeLabel] {
+                    try? data.write(to: noticeURL)
+                    unload(plistURL: noticeURL)
+                    load(plistURL: noticeURL)
+                    plistCache[noticeLabel] = data
+                }
             } else {
                 // Remove notice job if advance notice was disabled
                 unload(plistURL: noticeURL)
                 try? FileManager.default.removeItem(at: noticeURL)
+                plistCache.removeValue(forKey: noticeLabel)
             }
         }
     }
@@ -83,19 +110,10 @@ enum LaunchdManager {
         let plistURL = agentsDir.appendingPathComponent("\(label).plist")
         guard FileManager.default.fileExists(atPath: plistURL.path) else { return false }
 
-        let proc = Process()
-        proc.executableURL = URL(fileURLWithPath: "/bin/launchctl")
-        proc.arguments = ["list", label]
-        let pipe = Pipe()
-        proc.standardOutput = pipe
-        proc.standardError = pipe
-        do {
-            try proc.run()
-            proc.waitUntilExit()
-            return proc.terminationStatus == 0
-        } catch {
-            return false
-        }
+        return LaunchdManager.runWithTimeout(
+            URL(fileURLWithPath: "/bin/launchctl"),
+            args: ["list", label]
+        )
     }
 
     static func remove(rule: ScheduleRule) {
@@ -120,13 +138,16 @@ enum LaunchdManager {
         let newWake  = nextShutdown.map { $0.addingTimeInterval(-wakeLeadSeconds) }
 
         // Cancel the previously stored wake when it is no longer the right time.
-        if let prev = prevWake, prev != newWake {
+        // Use a 1-second tolerance to avoid spurious reschedules from float precision.
+        let prevMatchesNew = newWake.flatMap { nw in prevWake.map { abs($0.timeIntervalSince(nw)) < 1.0 } } ?? false
+        if let prev = prevWake, !prevMatchesNew {
             pmsetCancel(at: prev)
             UserDefaults.standard.removeObject(forKey: wakeDefaultsKey)
         }
 
         // Schedule the new wake if it is in the future and not already stored.
-        if let target = newWake, target > now, target != prevWake {
+        let alreadyCorrect = prevWake.map { pv in newWake.map { abs(pv.timeIntervalSince($0)) < 1.0 } ?? false } ?? false
+        if let target = newWake, target > now, !alreadyCorrect {
             if pmsetSchedule(at: target) {
                 UserDefaults.standard.set(target, forKey: wakeDefaultsKey)
             }
@@ -148,18 +169,17 @@ enum LaunchdManager {
     /// Returns true if the command exited 0.
     @discardableResult
     private static func pmsetSchedule(at date: Date) -> Bool {
-        let proc = Process()
-        proc.executableURL = URL(fileURLWithPath: "/usr/bin/pmset")
-        proc.arguments = ["schedule", "wake", pmsetDateString(date)]
-        try? proc.run(); proc.waitUntilExit()
-        return proc.terminationStatus == 0
+        return runWithTimeout(
+            URL(fileURLWithPath: "/usr/bin/pmset"),
+            args: ["schedule", "wake", pmsetDateString(date)]
+        )
     }
 
     private static func pmsetCancel(at date: Date) {
-        let proc = Process()
-        proc.executableURL = URL(fileURLWithPath: "/usr/bin/pmset")
-        proc.arguments = ["schedule", "cancel", "wake", pmsetDateString(date)]
-        try? proc.run(); proc.waitUntilExit()
+        runWithTimeout(
+            URL(fileURLWithPath: "/usr/bin/pmset"),
+            args: ["schedule", "cancel", "wake", pmsetDateString(date)]
+        )
     }
 
     private static func pmsetDateString(_ date: Date) -> String {
@@ -203,14 +223,18 @@ enum LaunchdManager {
         var intervals: [[String: Any]] = []
 
         if let oneTimeDate = rule.oneTimeDate {
-            // One-time rule: compute notice time relative to the execution date.
-            let execMins   = rule.hour * 60 + rule.minute
-            let noticeMins = execMins - noticeMinutes
-            let (h, m, dayShift) = normalizeMinutes(noticeMins)
-            let cal        = Calendar.current
-            let noticeDate = cal.date(byAdding: .day, value: dayShift, to: oneTimeDate) ?? oneTimeDate
-            let comps      = cal.dateComponents([.month, .day], from: noticeDate)
-            guard let month = comps.month, let day = comps.day else { return nil }
+            // One-time rule: build exec date from the calendar day of oneTimeDate plus
+            // rule.hour/minute — do NOT use oneTimeDate's raw time components.
+            let cal = Calendar.current
+            var execComps = cal.dateComponents([.year, .month, .day], from: oneTimeDate)
+            execComps.hour = rule.hour
+            execComps.minute = rule.minute
+            execComps.second = 0
+            guard let execDate = cal.date(from: execComps) else { return nil }
+            let noticeDate = execDate.addingTimeInterval(TimeInterval(-noticeMinutes * 60))
+            let noticeComps = cal.dateComponents([.month, .day, .hour, .minute], from: noticeDate)
+            guard let month = noticeComps.month, let day = noticeComps.day,
+                  let h = noticeComps.hour, let m = noticeComps.minute else { return nil }
             intervals = [["Month": month, "Day": day, "Hour": h, "Minute": m]]
         } else {
             for wd in rule.weekdays {
@@ -236,27 +260,24 @@ enum LaunchdManager {
     /// Normalises a total-minutes value that may be negative (crosses midnight).
     /// Returns (hour, minute, dayShift) where dayShift is 0 or -1.
     private static func normalizeMinutes(_ total: Int) -> (Int, Int, Int) {
-        if total < 0 {
-            let wrapped = total + 24 * 60
-            return (wrapped / 60, wrapped % 60, -1)
-        }
-        return (total / 60, total % 60, 0)
+        let daySize = 24 * 60
+        let normalized = ((total % daySize) + daySize) % daySize
+        let dayShift = total < 0 ? -1 : 0
+        return (normalized / 60, normalized % 60, dayShift)
     }
 
     private static func load(plistURL: URL) {
-        let proc = Process()
-        proc.executableURL = URL(fileURLWithPath: "/bin/launchctl")
-        proc.arguments = ["load", plistURL.path]
-        try? proc.run()
-        proc.waitUntilExit()
+        runWithTimeout(
+            URL(fileURLWithPath: "/bin/launchctl"),
+            args: ["load", plistURL.path]
+        )
     }
 
     private static func unload(plistURL: URL) {
         guard FileManager.default.fileExists(atPath: plistURL.path) else { return }
-        let proc = Process()
-        proc.executableURL = URL(fileURLWithPath: "/bin/launchctl")
-        proc.arguments = ["unload", plistURL.path]
-        try? proc.run()
-        proc.waitUntilExit()
+        runWithTimeout(
+            URL(fileURLWithPath: "/bin/launchctl"),
+            args: ["unload", plistURL.path]
+        )
     }
 }

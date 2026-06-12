@@ -112,3 +112,13 @@
 
 // Feedback
 "feedback.subject"    = "Dusk フィードバック";
+
+// Advance notice
+"schedule.notice.toggle"  = "実行前に通知する";
+"schedule.notice.minute"  = "%d 分前";
+"schedule.notice.minutes" = "%d 分前";
+"notice.autoRunHint"      = "操作しないと自動実行されます";
+"notice.dismiss"          = "閉じる";
+"notice.snooze15"         = "15 分遅らせる";
+"notice.snooze30"         = "30 分遅らせる";
+"notice.skipToday"        = "今日はスキップ";

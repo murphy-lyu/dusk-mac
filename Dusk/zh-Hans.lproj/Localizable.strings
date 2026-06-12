@@ -115,7 +115,9 @@
 
 // Advance notice
 "schedule.notice.toggle"   = "执行前提醒我";
+// 中文无复数
 "schedule.notice.minute"   = "提前 %d 分钟";
+// 中文无复数
 "schedule.notice.minutes"  = "提前 %d 分钟";
 "notice.autoRunHint"       = "未操作将自动执行";
 "notice.dismiss"           = "知道了";

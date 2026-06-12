@@ -65,6 +65,7 @@ struct RuleRow: View {
                 .menuStyle(.borderlessButton)
                 .menuIndicator(.hidden)
                 .fixedSize()
+                .accessibilityLabel(Text("Options"))
             }
 
             Toggle("", isOn: Binding(
@@ -74,6 +75,7 @@ struct RuleRow: View {
             .toggleStyle(.switch)
             .controlSize(.mini)
             .labelsHidden()
+            .accessibilityLabel(Text(rule.type.label))
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)

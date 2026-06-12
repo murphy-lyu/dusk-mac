@@ -91,6 +91,8 @@ struct ScheduleRule: Identifiable, Codable, Equatable {
 
     var isOneTime: Bool { oneTimeDate != nil }
 
+    var schemaVersion: Int = 1
+
     var timeString: String {
         let formatter = DateFormatter()
         formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "jmm", options: 0, locale: .current)

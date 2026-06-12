@@ -24,7 +24,7 @@ struct TimeField: View {
             .frame(width: width)
             .textFieldStyle(.roundedBorder)
             .onChange(of: text) { newValue in
-                let filtered = newValue.filter { $0.isNumber }
+                let filtered = newValue.filter { $0.isASCII && $0.isNumber }
                 if filtered != newValue { text = filtered }
                 if filtered.count > maxDigits { text = String(filtered.prefix(maxDigits)) }
                 if let parsed = Int(text) {
@@ -33,7 +33,7 @@ struct TimeField: View {
             }
             .onChange(of: focused) { isFocused in
                 if isFocused {
-                    text = "\(value)"
+                    text = String(format: formatString, value)
                 } else {
                     let parsed = Int(text) ?? value
                     value = min(max(parsed, range.lowerBound), range.upperBound)

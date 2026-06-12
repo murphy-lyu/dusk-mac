@@ -23,7 +23,7 @@ enum NextTriggerCalculator {
         let currentHour   = calendar.component(.hour, from: date)
         let currentMinute = calendar.component(.minute, from: date)
 
-        for dayOffset in 0...7 {
+        for dayOffset in 0...6 {
             guard let candidate = calendar.date(byAdding: .day, value: dayOffset, to: date) else { continue }
             let weekdayRaw = calendar.component(.weekday, from: candidate)
             guard let weekday = Weekday(rawValue: weekdayRaw),

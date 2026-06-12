@@ -12,7 +12,14 @@ final class RulesStore: ObservableObject {
 
     @Published var rules: [ScheduleRule] = [] {
         didSet {
-            persist()
+            do {
+                let data = try JSONEncoder().encode(rules)
+                UserDefaults.standard.set(data, forKey: StorageKeys.scheduleRules)
+                persistError = nil
+            } catch {
+                persistError = error.localizedDescription
+                return
+            }
             syncLaunchd()
         }
     }
@@ -20,6 +27,12 @@ final class RulesStore: ObservableObject {
     /// Enabled rules that failed to register with launchd. Published so the UI can
     /// warn the user. Updated only AFTER a sync completes — never races with it.
     @Published private(set) var unscheduledRuleIDs: Set<UUID> = []
+
+    /// Non-nil when the last attempt to persist rules to UserDefaults failed.
+    @Published var persistError: String? = nil
+
+    private let syncQueue = DispatchQueue(label: "com.murphy.dusk.launchd-sync", qos: .utility)
+    private var pendingSyncWork: DispatchWorkItem?
 
     var conflicts: [RuleConflict] {
         ConflictDetector.conflicts(in: rules)
@@ -32,18 +45,16 @@ final class RulesStore: ObservableObject {
     // MARK: - CRUD
 
     func add(_ rule: ScheduleRule) {
+        guard rules.count < 100 else { return }
         rules.append(rule)
     }
 
     func remove(at offsets: IndexSet) {
-        let toRemove = offsets.map { rules[$0] }
         rules.remove(atOffsets: offsets)
-        toRemove.forEach { LaunchdManager.remove(rule: $0) }
     }
 
     func remove(rule: ScheduleRule) {
         rules.removeAll { $0.id == rule.id }
-        LaunchdManager.remove(rule: rule)
     }
 
     func update(_ rule: ScheduleRule) {
@@ -70,26 +81,19 @@ final class RulesStore: ObservableObject {
         return decoded
     }
 
-    private func persist() {
-        guard let data = try? JSONEncoder().encode(rules) else { return }
-        UserDefaults.standard.set(data, forKey: StorageKeys.scheduleRules)
-    }
-
     private func syncLaunchd() {
-        // Snapshot on the main thread, then sync + verify serially on a background
-        // queue. Verification runs strictly after sync, so it can't observe a
-        // half-registered state and produce false "Not scheduled" warnings.
-        let snapshot = rules
-        DispatchQueue.global(qos: .utility).async {
+        pendingSyncWork?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            let snapshot = self.rules
             LaunchdManager.sync(rules: snapshot)
-
             var failed = Set<UUID>()
             for rule in snapshot where rule.isEnabled && !LaunchdManager.isScheduled(rule: rule) {
                 failed.insert(rule.id)
             }
-            DispatchQueue.main.async {
-                self.unscheduledRuleIDs = failed
-            }
+            DispatchQueue.main.async { self.unscheduledRuleIDs = failed }
         }
+        pendingSyncWork = work
+        syncQueue.asyncAfter(deadline: .now() + 0.3, execute: work)
     }
 }

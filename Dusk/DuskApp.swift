@@ -64,6 +64,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self, selector: #selector(handleNoticeNotification(_:)),
             name: .duskShowNotice, object: nil)
 
+        AdvanceNoticeManager.cleanupOrphanedPlists(validRuleIDs: Set(RulesStore.shared.rules.map { $0.id }))
+
         switch AppState.shared.launchMode {
         case .normal:
             break   // nothing special; the MenuBarExtra body handles setup

@@ -112,3 +112,13 @@
 
 // Feedback
 "feedback.subject"    = "Dusk Feedback";
+
+// Advance notice
+"schedule.notice.toggle"  = "Vor Ausführung erinnern";
+"schedule.notice.minute"  = "%d Minute vorher";
+"schedule.notice.minutes" = "%d Minuten vorher";
+"notice.autoRunHint"      = "Wird automatisch ausgeführt, wenn keine Aktion erfolgt";
+"notice.dismiss"          = "Schließen";
+"notice.snooze15"         = "15 Min. verzögern";
+"notice.snooze30"         = "30 Min. verzögern";
+"notice.skipToday"        = "Heute überspringen";

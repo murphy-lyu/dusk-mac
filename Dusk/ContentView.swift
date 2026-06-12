@@ -126,6 +126,8 @@ struct MainView: View {
 
         }
         .frame(width: 300)
+        .onAppear { lastError = nil }           // FIX L-3: clear stale error on panel open
+        .onDisappear { pendingConfirmRule = nil } // FIX M-15: clear pending confirm on panel close
 
             // In-window confirmation for disruptive actions. Using a system
             // confirmationDialog/alert here would spawn a separate key window and make

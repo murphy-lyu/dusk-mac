@@ -12,7 +12,13 @@ final class NotificationManager {
 
     func requestPermission() {
         UNUserNotificationCenter.current()
-            .requestAuthorization(options: [.alert, .sound]) { _, _ in }
+            .requestAuthorization(options: [.alert, .sound]) { granted, _ in
+                if !granted {
+                    DispatchQueue.main.async {
+                        UserDefaults.standard.set(false, forKey: "notifyOnResult")
+                    }
+                }
+            }
     }
 
     /// Called when the user turns notifications ON. If they've never been asked,
@@ -47,7 +53,10 @@ final class NotificationManager {
         content.body  = success ? successBody(ruleType) : failBody(ruleType, detail: errorMessage)
         content.sound = .default
         let req = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(req)
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            guard settings.authorizationStatus == .authorized else { return }
+            UNUserNotificationCenter.current().add(req) { _ in }
+        }
     }
 
     private func successBody(_ type: RuleType) -> String {
