@@ -272,9 +272,8 @@ struct AddRuleView: View {
             .controlSize(.mini)
 
             if noticeEnabled {
-                Stepper(value: $noticeMinutes, in: 1...60) {
-                    Text(String(format: NSLocalizedString(
-                            noticeMinutes == 1 ? "schedule.notice.minute" : "schedule.notice.minutes",
+                Stepper(value: $noticeMinutes, in: 5...60) {
+                    Text(String(format: NSLocalizedString("schedule.notice.minutes",
                             comment: ""), noticeMinutes))
                         .font(.body)
                         .monospacedDigit()
