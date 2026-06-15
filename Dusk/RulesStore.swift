@@ -46,7 +46,7 @@ final class RulesStore: ObservableObject {
     // Scans for one-time rules whose scheduled time is already past (Mac was off,
     // launchd never fired, or execution was never confirmed). Logs them as "missed"
     // and removes them so the list stays clean.
-    private func markMissedAndCleanup() {
+    func markMissedAndCleanup() {
         let now = Date()
         let missed = rules.filter { rule in
             guard rule.oneTimeDate != nil else { return false }
