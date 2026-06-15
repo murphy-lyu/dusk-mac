@@ -40,6 +40,28 @@ final class RulesStore: ObservableObject {
 
     private init() {
         rules = load()
+        markMissedAndCleanup()
+    }
+
+    // Scans for one-time rules whose scheduled time is already past (Mac was off,
+    // launchd never fired, or execution was never confirmed). Logs them as "missed"
+    // and removes them so the list stays clean.
+    private func markMissedAndCleanup() {
+        let now = Date()
+        let missed = rules.filter { rule in
+            guard rule.oneTimeDate != nil else { return false }
+            return NextTriggerCalculator.next(for: rule, after: now) == nil
+        }
+        guard !missed.isEmpty else { return }
+        for rule in missed {
+            ExecutionLog.shared.append(ExecutionRecord(ruleType: rule.type, outcome: .missed))
+        }
+        let missedIDs = Set(missed.map { $0.id })
+        // Remove silently without triggering syncLaunchd (launchd jobs will have already
+        // expired; AdvanceNoticeManager.cleanupOrphanedPlists() handles plist cleanup).
+        guard let data = try? JSONEncoder().encode(rules.filter { !missedIDs.contains($0.id) }) else { return }
+        UserDefaults.standard.set(data, forKey: StorageKeys.scheduleRules)
+        rules = (try? JSONDecoder().decode([ScheduleRule].self, from: data)) ?? rules
     }
 
     // MARK: - CRUD

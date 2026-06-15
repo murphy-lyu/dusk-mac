@@ -83,10 +83,28 @@ private struct HistoryRow: View {
         return "\(monthDayFmt.string(from: date))  \(time)"
     }
 
+    private var outcomeIcon: String {
+        switch record.outcome {
+        case .success: return "checkmark.circle.fill"
+        case .failed:  return "xmark.circle.fill"
+        case .skipped: return "minus.circle.fill"
+        case .missed:  return "clock.badge.xmark"
+        }
+    }
+
+    private var outcomeColor: Color {
+        switch record.outcome {
+        case .success: return .green
+        case .failed:  return .red
+        case .skipped: return .secondary
+        case .missed:  return .orange
+        }
+    }
+
     var body: some View {
         HStack(spacing: 8) {
-            Image(systemName: record.success ? "checkmark.circle.fill" : "xmark.circle.fill")
-                .foregroundStyle(record.success ? .green : .red)
+            Image(systemName: outcomeIcon)
+                .foregroundStyle(outcomeColor)
                 .font(.subheadline)
                 .frame(width: 20)
 
@@ -99,6 +117,14 @@ private struct HistoryRow: View {
                         .font(.caption)
                         .foregroundStyle(.red)
                         .lineLimit(1)
+                } else if record.outcome == .skipped {
+                    Text("Skipped")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else if record.outcome == .missed {
+                    Text("Missed")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
                 }
             }
 

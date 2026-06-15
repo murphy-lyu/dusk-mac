@@ -20,11 +20,11 @@ final class RuleExecutor {
                 switch result {
                 case .success:
                     NotificationManager.shared.notify(ruleType: rule.type, success: true)
-                    ExecutionLog.shared.append(ExecutionRecord(ruleType: rule.type, success: true))
+                    ExecutionLog.shared.append(ExecutionRecord(ruleType: rule.type, outcome: .success))
                 case .failure(let error):
                     let msg = error.localizedDescription
                     NotificationManager.shared.notify(ruleType: rule.type, success: false, errorMessage: msg)
-                    ExecutionLog.shared.append(ExecutionRecord(ruleType: rule.type, success: false, errorMessage: msg))
+                    ExecutionLog.shared.append(ExecutionRecord(ruleType: rule.type, outcome: .failed, errorMessage: msg))
                 }
                 completion?(result)
             }
@@ -57,6 +57,10 @@ final class RuleExecutor {
         // User chose "Skip Today" in the advance-notice window
         if AdvanceNoticeManager.shouldSkipToday(ruleId: uuid) {
             AdvanceNoticeManager.clearSkip(for: uuid)
+            ExecutionLog.shared.append(ExecutionRecord(ruleType: rule.type, outcome: .skipped))
+            if rule.isOneTime {
+                DispatchQueue.main.async { RulesStore.shared.remove(rule: rule) }
+            }
             executingRuleIDs.remove(uuid)
             completion?()
             return
@@ -74,12 +78,12 @@ final class RuleExecutor {
         AdvanceNoticeManager.clearSnooze(for: uuid)
         AdvanceNoticeManager.removeSnoozedJob(ruleId: uuid)
 
-        // H-4: Execute first, then remove the one-time rule on success.
-        // The rule is kept in the store until we know the action completed —
-        // if the process is suspended mid-flight the rule survives for retry.
+        // Execute first, then always remove one-time rules regardless of outcome.
+        // Success → clean removal. Failure is already logged; keeping a past-due
+        // one-time rule in the list would confuse the user more than removing it.
         execute(rule: rule) { [self] result in
             self.executingRuleIDs.remove(uuid)
-            if case .success = result, rule.isOneTime {
+            if rule.isOneTime {
                 DispatchQueue.main.async { RulesStore.shared.remove(rule: rule) }
             }
             completion?()
