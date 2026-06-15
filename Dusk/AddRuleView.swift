@@ -9,7 +9,7 @@ struct AddRuleView: View {
     @Binding var active: ActiveView
     @ObservedObject private var store = RulesStore.shared
 
-    @State private var selectedType: RuleType = .disconnectWifi
+    @State private var selectedType: RuleType? = nil
     @State private var hour: Int = 18
     @State private var minute: Int = 30
     @State private var selectedWeekdays: Set<Weekday> = Weekday.workdays
@@ -147,7 +147,7 @@ struct AddRuleView: View {
                 }
 
                 // Advance notice — visually separated as it's an optional enhancement.
-                if selectedType.supportsAdvanceNotice {
+                if selectedType?.supportsAdvanceNotice == true {
                     Divider()
                         .padding(.vertical, 2)
                     advanceNoticeSection
@@ -182,10 +182,10 @@ struct AddRuleView: View {
                 .frame(width: 100)
                 .keyboardShortcut(.cancelAction)
                 Button {
-                    let notice = noticeEnabled && selectedType.supportsAdvanceNotice
+                    let notice = noticeEnabled && (selectedType?.supportsAdvanceNotice == true)
                                  ? noticeMinutes : nil
                     store.add(ScheduleRule(
-                        type: selectedType,
+                        type: selectedType!,
                         hour: hour,
                         minute: minute,
                         weekdays: isOneTime ? [] : selectedWeekdays,
@@ -213,6 +213,7 @@ struct AddRuleView: View {
     }
 
     private var saveDisabled: Bool {
+        guard selectedType != nil else { return true }
         if isOneTime {
             guard let date = DateComponents(
                 calendar: .current,

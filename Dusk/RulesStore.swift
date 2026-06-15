@@ -54,7 +54,9 @@ final class RulesStore: ObservableObject {
         }
         guard !missed.isEmpty else { return }
         for rule in missed {
-            ExecutionLog.shared.append(ExecutionRecord(ruleType: rule.type, outcome: .missed))
+            let outcome: ExecutionOutcome = AdvanceNoticeManager.shouldSkipToday(ruleId: rule.id) ? .skipped : .missed
+            AdvanceNoticeManager.clearSkip(for: rule.id)
+            ExecutionLog.shared.append(ExecutionRecord(ruleType: rule.type, outcome: outcome))
         }
         let missedIDs = Set(missed.map { $0.id })
         // Remove silently without triggering syncLaunchd (launchd jobs will have already
