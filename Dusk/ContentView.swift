@@ -38,6 +38,7 @@ struct MainView: View {
     @State private var executingRuleID: UUID?
     @State private var lastError: String?
     @State private var pendingConfirmRule: ScheduleRule?
+    @State private var referenceDate = Date()
 
     var body: some View {
         ZStack {
@@ -91,6 +92,7 @@ struct MainView: View {
                             RuleRow(
                                 rule: rule,
                                 isExecuting: executingRuleID == rule.id,
+                                referenceDate: referenceDate,
                                 isUnscheduled: store.unscheduledRuleIDs.contains(rule.id),
                                 canMoveUp: index > 0,
                                 canMoveDown: index < store.rules.count - 1,
@@ -127,8 +129,15 @@ struct MainView: View {
         }
         .frame(width: 300)
         .onAppear {
+            referenceDate = Date()
             lastError = nil
             RulesStore.shared.markMissedAndCleanup()  // remove expired once-rules on every panel open
+        }
+        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { now in
+            // Recalculate at minute boundaries, including after wake or a clock change.
+            if floor(now.timeIntervalSince1970 / 60) != floor(referenceDate.timeIntervalSince1970 / 60) {
+                referenceDate = now
+            }
         }
         .onDisappear { pendingConfirmRule = nil } // FIX M-15: clear pending confirm on panel close
 

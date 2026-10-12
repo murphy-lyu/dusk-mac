@@ -8,6 +8,7 @@ import SwiftUI
 struct RuleRow: View {
     let rule: ScheduleRule
     let isExecuting: Bool
+    let referenceDate: Date
     var isUnscheduled: Bool = false
     let canMoveUp: Bool
     let canMoveDown: Bool
@@ -42,7 +43,7 @@ struct RuleRow: View {
                     .foregroundStyle(.orange)
                     .lineLimit(1)
                     .help(NSLocalizedString("row.notScheduled.help", comment: ""))
-                } else if let next = NextTriggerCalculator.label(for: rule) {
+                } else if let next = NextTriggerCalculator.label(for: rule, after: referenceDate) {
                     Text(String(format: NSLocalizedString("row.next", comment: ""), next))
                         .font(.caption)
                         .foregroundStyle(.tertiary)

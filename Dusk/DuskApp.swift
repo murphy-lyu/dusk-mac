@@ -41,10 +41,6 @@ struct DuskApp: App {
         MenuBarExtra("Dusk", systemImage: menuBarIcon,
                      isInserted: .constant(AppState.shared.launchMode == .normal)) {
             ContentView()
-                .onAppear {
-                    let hide = UserDefaults.standard.bool(forKey: StorageKeys.hideDockIcon)
-                    NSApp.setActivationPolicy(hide ? .accessory : .regular)
-                }
         }
         .menuBarExtraStyle(.window)
     }
@@ -68,7 +64,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         switch AppState.shared.launchMode {
         case .normal:
-            break   // nothing special; the MenuBarExtra body handles setup
+            // Apply the saved policy at launch, before the user opens the panel.
+            let hide = UserDefaults.standard.bool(forKey: StorageKeys.hideDockIcon)
+            NSApp.setActivationPolicy(hide ? .accessory : .regular)
 
         case .executeRule:
             // Completely invisible — no Dock, no menu bar icon, quit when done.

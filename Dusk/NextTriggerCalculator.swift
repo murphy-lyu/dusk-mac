@@ -23,7 +23,8 @@ enum NextTriggerCalculator {
         let currentHour   = calendar.component(.hour, from: date)
         let currentMinute = calendar.component(.minute, from: date)
 
-        for dayOffset in 0...6 {
+        // Include the same weekday next week when today's occurrence has passed.
+        for dayOffset in 0...7 {
             guard let candidate = calendar.date(byAdding: .day, value: dayOffset, to: date) else { continue }
             let weekdayRaw = calendar.component(.weekday, from: candidate)
             guard let weekday = Weekday(rawValue: weekdayRaw),
@@ -44,9 +45,9 @@ enum NextTriggerCalculator {
         return nil
     }
 
-    static func label(for rule: ScheduleRule) -> String? {
+    static func label(for rule: ScheduleRule, after date: Date = Date()) -> String? {
         guard rule.isEnabled else { return nil }
-        guard let next = next(for: rule) else { return nil }
+        guard let next = next(for: rule, after: date) else { return nil }
 
         let timeFormat = DateFormatter.dateFormat(fromTemplate: "jmm", options: 0, locale: .current) ?? "HH:mm"
         let timeFmt = DateFormatter()
@@ -54,9 +55,10 @@ enum NextTriggerCalculator {
         let timeStr = timeFmt.string(from: next)
 
         let calendar = Calendar.current
-        if calendar.isDateInToday(next) {
+        if calendar.isDate(next, inSameDayAs: date) {
             return String(format: NSLocalizedString("next.today", comment: ""), timeStr)
-        } else if calendar.isDateInTomorrow(next) {
+        } else if let tomorrow = calendar.date(byAdding: .day, value: 1, to: date),
+                  calendar.isDate(next, inSameDayAs: tomorrow) {
             return String(format: NSLocalizedString("next.tomorrow", comment: ""), timeStr)
         } else {
             let dayFmt = DateFormatter()
