@@ -169,7 +169,7 @@ struct AboutTab: View {
                 .padding(.vertical, 2)
 
             HStack(spacing: 8) {
-                Link("Twitter / X", destination: URL(string: "https://x.com/murphy_latte")!)
+                Link("Twitter / X", destination: URL(string: "https://x.com/yasashii_me")!)
                 Text("·")
                     .foregroundStyle(.tertiary)
                 Link("GitHub", destination: URL(string: "https://github.com/murphy-lyu/dusk-mac")!)
